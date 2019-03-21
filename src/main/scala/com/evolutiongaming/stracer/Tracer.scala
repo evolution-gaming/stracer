@@ -32,9 +32,7 @@ object Tracer {
 
   def of[F[_] : Sync : Clock : Random](enabled: F[Boolean], config: Config): F[Tracer[F]] = {
     val tracer = for {
-      config   <- config.getOpt[Config]("evolutiongaming.tracing")
-      enabled1 <- config.getOpt[Boolean]("enabled")
-      if enabled1
+      enabled1 <- config.getOpt[Boolean]("enabled") if enabled1
     } yield {
       of[F](enabled)
     }
