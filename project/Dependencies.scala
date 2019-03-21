@@ -5,8 +5,8 @@ object Dependencies {
   val scalatest     = "org.scalatest"       %% "scalatest" % "3.0.7"
   val machinist     = "org.typelevel"       %% "machinist" % "0.6.6"
   val `cats-par`    = "io.chrisdavenport"   %% "cats-par" % "0.2.1"
-  val zipkin        = "io.zipkin.zipkin2"    % "zipkin" % "2.12.5"
-  val `cats-helper` = "com.evolutiongaming" %% "cats-helper" % "0.0.5"
+  val zipkin        = "io.zipkin.zipkin2"    % "zipkin" % "2.12.6"
+  val `cats-helper` = "com.evolutiongaming" %% "cats-helper" % "0.0.6"
   val random        = "com.evolutiongaming" %% "random" % "0.0.2"
   val configTools   = "com.evolutiongaming" %% "config-tools" % "1.0.3"
 
@@ -56,7 +56,7 @@ object Dependencies {
 
 
   object KafkaJournal {
-    private val version = "0.0.54"
+    private val version = "0.0.55"
     val journal = "com.evolutiongaming" %% "kafka-journal" % version
   }
 }

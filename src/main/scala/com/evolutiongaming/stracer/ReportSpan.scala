@@ -5,9 +5,9 @@ import cats.data.{NonEmptyList => Nel}
 import cats.effect._
 import cats.effect.implicits._
 import cats.implicits._
-import com.evolutiongaming.catshelper.SerialRef
+import com.evolutiongaming.catshelper.{Log, LogOf, SerialRef}
 import com.evolutiongaming.config.ConfigHelper._
-import com.evolutiongaming.kafka.journal.{KafkaProducer, KafkaProducerOf, Log, LogOf}
+import com.evolutiongaming.kafka.journal.{KafkaProducer, KafkaProducerOf}
 import com.evolutiongaming.skafka.producer.{ProducerConfig, ProducerRecord}
 import com.evolutiongaming.skafka.{ToBytes, Topic}
 import com.typesafe.config.Config
@@ -35,7 +35,6 @@ object ReportSpan {
   ): Resource[F, ReportSpan[F]] = {
 
     val reportSpan = for {
-      config         <- config.getOpt[Config]("evolutiongaming.tracing")
       enabled1       <- config.getOpt[Boolean]("enabled")
       if enabled1
       producerConfig <- config.getOpt[Config]("kafka.producer").map(ProducerConfig(_))

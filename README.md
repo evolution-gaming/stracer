@@ -38,9 +38,9 @@ Generate SpanId and Trace
 ```scala
 trait Tracer[F[_]] {
 
-  def spanId: F[Option[SpanId]]
+  def spanId: F[SpanId]
 
-  def trace(parentId: Option[SpanId] = None): F[Option[Trace]]
+  def trace(parentId: Option[SpanId] = None): F[Trace]
 }
 ```
 
