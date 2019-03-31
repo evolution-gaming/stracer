@@ -8,16 +8,12 @@ Library for distributed tracing in Scala
 final case class Span(
   traceId: TraceId,
   spanId: SpanId,
-  parentId: Option[SpanId] = None,
-  kind: Option[Span.Kind] = None,
-  name: Option[String] = None,
-  timestamp: Option[Instant] = None,
+  name: String,
+  timestamp: Instant,
+  kind: Option[Kind] = None,
   duration: Option[FiniteDuration] = None,
-  localEndpoint: Option[Endpoint] = None,
   remoteEndpoint: Option[Endpoint] = None,
-  annotations: List[Annotation] = List.empty,
-  tags: Map[String, String] = Map.empty,
-  debug: Option[Boolean] = None,
+  tags: Tags = List.empty,
   shared: Option[Boolean] = None)
 ```
 
@@ -27,7 +23,7 @@ final case class Span(
 final case class Trace(
   traceId: TraceId,
   spanId: SpanId,
-  parentId: Option[SpanId] = None,
+  timestamp: Option[Instant],
   sampling: Option[Sampling] = None)
 ``` 
  
@@ -38,9 +34,9 @@ Generate SpanId and Trace
 ```scala
 trait Tracer[F[_]] {
 
-  def spanId: F[SpanId]
+  def spanId: F[Option[SpanId]]
 
-  def trace(parentId: Option[SpanId] = None): F[Trace]
+  def trace(sampling: Option[Sampling] = None): F[Option[Trace]]
 }
 ```
 
@@ -63,5 +59,5 @@ trait ReportSpan[F[_]] {
 ```scala
 resolvers += Resolver.bintrayRepo("evolutiongaming", "maven")
 
-libraryDependencies += "com.evolutiongaming" %% "stracer" % "0.0.1"
+libraryDependencies += "com.evolutiongaming" %% "stracer" % "0.0.3"
 ```
