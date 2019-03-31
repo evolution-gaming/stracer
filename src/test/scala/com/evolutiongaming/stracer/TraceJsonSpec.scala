@@ -2,6 +2,7 @@ package com.evolutiongaming.stracer
 
 import java.time.Instant
 
+import cats.implicits._
 import com.evolutiongaming.stracer.TraceJson.TraceFormat
 import org.scalatest.{FunSuite, Matchers}
 import play.api.libs.json.{JsSuccess, Json}
@@ -16,8 +17,8 @@ class TraceJsonSpec extends FunSuite with Matchers {
     val trace = Trace(
       traceId = traceId,
       spanId = spanId,
-      parentId = Some(spanId),
-      sampling = Some(Sampling.Accept))
+      timestamp = timestamp.some,
+      sampling = Sampling.Accept.some)
 
     val json = Json.toJson(trace)
     json shouldEqual expected

@@ -12,8 +12,7 @@ trait Tracer[F[_]] {
 
   def spanId: F[Option[SpanId]]
 
-  // TODO return timestamp
-  def trace(parentId: Option[SpanId] = None): F[Option[Trace]]
+  def trace(sampling: Option[Sampling] = None): F[Option[Trace]]
 }
 
 object Tracer {
@@ -31,7 +30,7 @@ object Tracer {
       
       def spanId = spanId1
 
-      def trace(parentId: Option[SpanId]) = trace1
+      def trace(sampling: Option[Sampling]) = trace1
     }
   }
 
@@ -66,7 +65,7 @@ object Tracer {
       } yield spanId
     }
 
-    def trace(parentId: Option[SpanId]) = {
+    def trace(sampling: Option[Sampling]) = {
       for {
         enabled <- enabled
         trace   <- if (!enabled) none[Trace].pure[F] else {
@@ -77,7 +76,7 @@ object Tracer {
           } yield {
             val spanId = SpanId(long)
             val traceId = TraceId(timestamp, int, long)
-            Trace(traceId, spanId, parentId).some
+            Trace(traceId, spanId, timestamp.some, sampling).some
           }
         }
       } yield trace
