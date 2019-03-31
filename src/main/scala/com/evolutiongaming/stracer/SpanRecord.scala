@@ -11,7 +11,7 @@ final case class SpanRecord(
   traceId: TraceId,
   spanId: SpanId,
   parentId: Option[SpanId] = None,
-  kind: Option[SpanRecord.Kind] = None,
+  kind: Option[Kind] = None,
   name: Option[String] = None,
   timestamp: Option[Instant] = None,
   duration: Option[FiniteDuration] = None,
@@ -23,28 +23,6 @@ final case class SpanRecord(
   shared: Option[Boolean] = None)
 
 object SpanRecord {
-
-  sealed abstract class Kind extends Product
-
-  object Kind {
-
-    case object Client extends Kind
-    case object Server extends Kind
-    case object Producer extends Kind
-    case object Consumer extends Kind
-
-
-    implicit class KindOps(val self: Kind) extends AnyVal {
-
-      def toJava: SpanJ.Kind = self match {
-        case Client   => SpanJ.Kind.CLIENT
-        case Server   => SpanJ.Kind.SERVER
-        case Producer => SpanJ.Kind.PRODUCER
-        case Consumer => SpanJ.Kind.CONSUMER
-      }
-    }
-  }
-
 
   implicit class SpanOps(val self: SpanRecord) extends AnyVal {
 

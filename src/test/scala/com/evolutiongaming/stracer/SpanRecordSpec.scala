@@ -24,7 +24,7 @@ class SpanRecordSpec extends FunSuite with Matchers {
       traceId = traceId,
       parentId = spanId.some,
       spanId = spanId,
-      kind = SpanRecord.Kind.Server.some,
+      kind = Kind.Server.some,
       name = "name".some,
       timestamp = timestamp.some,
       duration = 1.millis.some,
