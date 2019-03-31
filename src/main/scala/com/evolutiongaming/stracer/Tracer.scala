@@ -12,12 +12,17 @@ trait Tracer[F[_]] {
 
   def spanId: F[Option[SpanId]]
 
+  // TODO return timestamp
   def trace(parentId: Option[SpanId] = None): F[Option[Trace]]
 }
 
 object Tracer {
 
+  def apply[F[_]](implicit F: Tracer[F]): Tracer[F] = F
+
+
   def empty[F[_] : Applicative]: Tracer[F] = const(none[Trace].pure[F], none[SpanId].pure[F])
+
 
   def const[F[_]](trace: F[Option[Trace]], spanId: F[Option[SpanId]]): Tracer[F] = {
     val spanId1 = spanId
@@ -30,6 +35,7 @@ object Tracer {
     }
   }
 
+
   def of[F[_] : Sync : Clock : Random](enabled: F[Boolean], config: Config): F[Tracer[F]] = {
     val tracer = for {
       enabled1 <- config.getOpt[Boolean]("enabled") if enabled1
@@ -39,9 +45,11 @@ object Tracer {
     tracer getOrElse empty[F].pure[F]
   }
 
+
   def of[F[_] : Sync : Clock : Random](enabled: F[Boolean]): F[Tracer[F]] = {
     apply[F](enabled).pure[F]
   }
+
 
   def apply[F[_] : Sync : Clock : Random](enabled: F[Boolean]): Tracer[F] = new Tracer[F] {
 

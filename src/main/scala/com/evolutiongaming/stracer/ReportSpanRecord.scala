@@ -15,24 +15,24 @@ import zipkin2.codec.SpanBytesEncoder
 
 import scala.concurrent.duration._
 
-trait ReportSpan[F[_]] {
+trait ReportSpanRecord[F[_]] {
 
-  def apply(span: Span): F[Unit]
+  def apply(span: SpanRecord): F[Unit]
 }
 
-object ReportSpan {
+object ReportSpanRecord {
 
-  def empty[F[_] : Applicative]: ReportSpan[F] = const(().pure[F])
+  def empty[F[_] : Applicative]: ReportSpanRecord[F] = const(().pure[F])
 
-  def const[F[_]](value: F[Unit]): ReportSpan[F] = new ReportSpan[F] {
-    def apply(span: Span) = value
+  def const[F[_]](value: F[Unit]): ReportSpanRecord[F] = new ReportSpanRecord[F] {
+    def apply(span: SpanRecord) = value
   }
 
 
   def of[F[_] : Concurrent : ContextShift : Timer : LogOf : KafkaProducerOf](
     config: Config,
     enabled: F[Boolean],
-  ): Resource[F, ReportSpan[F]] = {
+  ): Resource[F, ReportSpanRecord[F]] = {
 
     val reportSpan = for {
       enabled1       <- config.getOpt[Boolean]("enabled") if enabled1
@@ -43,15 +43,15 @@ object ReportSpan {
       of[F](topic, producerConfig, enabled)
     }
 
-    reportSpan getOrElse Resource.pure[F, ReportSpan[F]](empty[F])
+    reportSpan getOrElse Resource.pure[F, ReportSpanRecord[F]](empty[F])
   }
 
   def of[F[_] : Concurrent : Timer : ContextShift : Clock : LogOf : KafkaProducerOf](
     topic: Topic,
     producerConfig: ProducerConfig,
     enabled: F[Boolean])(implicit
-    toBytes: ToBytes[Nel[Span]]
-  ): Resource[F, ReportSpan[F]] = {
+    toBytes: ToBytes[Nel[SpanRecord]]
+  ): Resource[F, ReportSpanRecord[F]] = {
 
 
     sealed trait State
@@ -172,14 +172,14 @@ object ReportSpan {
     topic: Topic,
     kafkaProducer: F[Option[KafkaProducer[F]]],
     log: Log[F])(implicit
-    toBytes: ToBytes[Nel[Span]]
-  ): ReportSpan[F] = new ReportSpan[F] {
+    toBytes: ToBytes[Nel[SpanRecord]]
+  ): ReportSpanRecord[F] = new ReportSpanRecord[F] {
 
-    def apply(span: Span): F[Unit] = {
+    def apply(span: SpanRecord): F[Unit] = {
       for {
         producer <- kafkaProducer
         _        <- producer.foldMapM { producer =>
-          val record = ProducerRecord[String, Nel[Span]](
+          val record = ProducerRecord[String, Nel[SpanRecord]](
             topic = topic,
             key = span.traceId.hex,
             value = Nel.of(span))

@@ -8,9 +8,9 @@ import scala.collection.JavaConverters._
 
 object ToBytesOf {
 
-  def apply(encode: SpanBytesEncoder): ToBytes[Nel[Span]] = new ToBytes[Nel[Span]] {
+  def apply(encode: SpanBytesEncoder): ToBytes[Nel[SpanRecord]] = new ToBytes[Nel[SpanRecord]] {
 
-    def apply(spans: Nel[Span], topic: Topic) = {
+    def apply(spans: Nel[SpanRecord], topic: Topic) = {
       val spansJ = spans.toList.map(_.toJava).asJava
       encode.encodeList(spansJ)
     }

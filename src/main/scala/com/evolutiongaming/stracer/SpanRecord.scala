@@ -7,11 +7,11 @@ import zipkin2.{Span => SpanJ}
 
 import scala.concurrent.duration.FiniteDuration
 
-final case class Span(
+final case class SpanRecord(
   traceId: TraceId,
   spanId: SpanId,
   parentId: Option[SpanId] = None,
-  kind: Option[Span.Kind] = None,
+  kind: Option[SpanRecord.Kind] = None,
   name: Option[String] = None,
   timestamp: Option[Instant] = None,
   duration: Option[FiniteDuration] = None,
@@ -22,7 +22,7 @@ final case class Span(
   debug: Option[Boolean] = None,
   shared: Option[Boolean] = None)
 
-object Span {
+object SpanRecord {
 
   sealed abstract class Kind extends Product
 
@@ -46,7 +46,7 @@ object Span {
   }
 
 
-  implicit class SpanOps(val self: Span) extends AnyVal {
+  implicit class SpanOps(val self: SpanRecord) extends AnyVal {
 
     def toJava: SpanJ = {
       SpanJ.newBuilder()

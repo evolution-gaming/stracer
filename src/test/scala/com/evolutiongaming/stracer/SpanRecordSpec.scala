@@ -10,7 +10,7 @@ import cats.implicits._
 
 import scala.concurrent.duration._
 
-class SpanSpec extends FunSuite with Matchers {
+class SpanRecordSpec extends FunSuite with Matchers {
 
   test("toJava") {
 
@@ -20,11 +20,11 @@ class SpanSpec extends FunSuite with Matchers {
 
     val spanId: SpanId = SpanId(1551818273913L)
 
-    val span = Span(
+    val span = SpanRecord(
       traceId = traceId,
       parentId = spanId.some,
       spanId = spanId,
-      kind = Span.Kind.Server.some,
+      kind = SpanRecord.Kind.Server.some,
       name = "name".some,
       timestamp = timestamp.some,
       duration = 1.millis.some,
