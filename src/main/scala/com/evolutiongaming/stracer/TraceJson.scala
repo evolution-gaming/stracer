@@ -10,7 +10,7 @@ object TraceJson {
     def name(a: Sampling) = a.toString.toLowerCase
 
     val map = Sampling.Values.map(a => (name(a), a)).toMap
-    new ObjectFormat(map.get, name)
+    ObjectFormat(map.get, name)
   }
 
   implicit val TraceIdFormat: Format[TraceId] = formatOf[TraceId]
