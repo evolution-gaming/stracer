@@ -37,7 +37,7 @@ object Tracer {
 
   def of[F[_] : Sync : Clock : Random](enabled: F[Boolean], config: Config): F[Tracer[F]] = {
     val tracer = for {
-      enabled1 <- config.getOpt[Boolean]("enabled") if enabled1
+      _ <- config.getOpt[Boolean]("enabled").filter(identity)
     } yield {
       of[F](enabled)
     }

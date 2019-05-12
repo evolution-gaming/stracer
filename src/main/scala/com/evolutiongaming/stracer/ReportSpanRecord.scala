@@ -35,7 +35,7 @@ object ReportSpanRecord {
   ): Resource[F, ReportSpanRecord[F]] = {
 
     val reportSpan = for {
-      enabled1       <- config.getOpt[Boolean]("enabled") if enabled1
+      _              <- config.getOpt[Boolean]("enabled").filter(identity)
       producerConfig <- config.getOpt[Config]("kafka.producer").map(ProducerConfig(_))
     } yield {
       val topic = config.getOpt[String]("topic") getOrElse "jaeger"
