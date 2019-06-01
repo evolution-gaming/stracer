@@ -3,10 +3,10 @@ import sbt._
 object Dependencies {
 
   val scalatest     = "org.scalatest"       %% "scalatest"    % "3.0.7"
-  val machinist     = "org.typelevel"       %% "machinist"    % "0.6.6"
+  val machinist     = "org.typelevel"       %% "machinist"    % "0.6.8"
   val `cats-par`    = "io.chrisdavenport"   %% "cats-par"     % "0.2.1"
   val zipkin        = "io.zipkin.zipkin2"    % "zipkin"       % "2.12.9"
-  val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "0.0.6"
+  val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "0.0.12"
   val random        = "com.evolutiongaming" %% "random"       % "0.0.2"
   val configTools   = "com.evolutiongaming" %% "config-tools" % "1.0.3"
 
@@ -23,7 +23,7 @@ object Dependencies {
     val core   = "org.typelevel" %% "cats-core"   % version
     val kernel = "org.typelevel" %% "cats-kernel" % version
     val macros = "org.typelevel" %% "cats-macros" % version
-    val effect = "org.typelevel" %% "cats-effect" % "1.2.0"
+    val effect = "org.typelevel" %% "cats-effect" % "1.3.1"
   }
 
   object Jaeger {
@@ -37,15 +37,15 @@ object Dependencies {
 
   object Opentracing {
     private val version = "0.31.0"
-    val api            = "io.opentracing"         % "opentracing-api"  % version
-    val noop           = "io.opentracing"         % "opentracing-noop" % version
-    val util           = "io.opentracing"         % "opentracing-util" % version
+    val api            = "io.opentracing"         % "opentracing-api"            % version
+    val noop           = "io.opentracing"         % "opentracing-noop"           % version
+    val util           = "io.opentracing"         % "opentracing-util"           % version
     val tracerresolver = "io.opentracing.contrib" % "opentracing-tracerresolver" % "0.1.5"
   }
   
   object Scodec {
     val core = "org.scodec" %% "scodec-core" % "1.11.3"
-    val bits = "org.scodec" %% "scodec-bits" % "1.1.10"
+    val bits = "org.scodec" %% "scodec-bits" % "1.1.11"
   }
 
   object PlayJsonTools {
@@ -56,7 +56,7 @@ object Dependencies {
 
 
   object KafkaJournal {
-    private val version = "0.0.57"
+    private val version = "0.0.59"
     val journal = "com.evolutiongaming" %% "kafka-journal" % version
   }
 }
