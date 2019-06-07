@@ -168,7 +168,7 @@ object ReportSpanRecord {
   }
 
 
-  def apply[F[_] : Sync](
+  def apply[F[_] : Concurrent](
     topic: Topic,
     kafkaProducer: F[Option[KafkaProducer[F]]],
     log: Log[F])(implicit
@@ -176,18 +176,23 @@ object ReportSpanRecord {
   ): ReportSpanRecord[F] = new ReportSpanRecord[F] {
 
     def apply(span: SpanRecord): F[Unit] = {
-      for {
-        producer <- kafkaProducer
-        _        <- producer.foldMapM { producer =>
-          val record = ProducerRecord[String, Nel[SpanRecord]](
-            topic = topic,
-            key = span.traceId.hex,
-            value = Nel.of(span))
 
-          producer.send(record).void.handleErrorWith { error =>
-            log.error(s"producer.send $span failed: $error, $error")
-          }
+      def send(kafkaProducer: KafkaProducer[F]) = {
+        val record = ProducerRecord[String, Nel[SpanRecord]](
+          topic = topic,
+          key = span.traceId.hex,
+          value = Nel.of(span))
+
+        val send = kafkaProducer.send(record).void.handleErrorWith { error =>
+          log.error(s"kafkaProducer.send $span failed: $error, $error")
         }
+
+        Concurrent[F].start { send }
+      }
+
+      for {
+        kafkaProducer <- kafkaProducer
+        _             <- kafkaProducer.foldMapM(send)
       } yield {}
     }
   }

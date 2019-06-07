@@ -11,7 +11,7 @@ object Dependencies {
   val configTools   = "com.evolutiongaming" %% "config-tools" % "1.0.3"
 
   object Skafka {
-    private val version = "3.0.9"
+    private val version = "4.0.4"
     val skafka      = "com.evolutiongaming" %% "skafka"            % version
     val logging     = "com.evolutiongaming" %% "skafka-logging"    % version
     val `play-json` = "com.evolutiongaming" %% "skafka-play-json"  % version
@@ -19,7 +19,7 @@ object Dependencies {
   }
 
   object Cats {
-    private val version = "1.6.0"
+    private val version = "1.6.1"
     val core   = "org.typelevel" %% "cats-core"   % version
     val kernel = "org.typelevel" %% "cats-kernel" % version
     val macros = "org.typelevel" %% "cats-macros" % version
@@ -56,7 +56,7 @@ object Dependencies {
 
 
   object KafkaJournal {
-    private val version = "0.0.59"
+    private val version = "0.0.64"
     val journal = "com.evolutiongaming" %% "kafka-journal" % version
   }
 }
