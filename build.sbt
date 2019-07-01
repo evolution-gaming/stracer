@@ -21,15 +21,6 @@ crossScalaVersions := Seq("2.12.8")
 resolvers += Resolver.bintrayRepo("evolutiongaming", "maven")
 
 libraryDependencies ++= Seq(
-//  Jaeger.core,
-//  Jaeger.thrift,
-//  Jaeger.client,
-//  Jaeger.tracerresolver,
-//  Jaeger.zipkin,
-//  Opentracing.api,
-//  Opentracing.noop,
-//  Opentracing.util,
-//  Opentracing.tracerresolver,
   Skafka.skafka,
   zipkin,
   random,

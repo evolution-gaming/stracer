@@ -2,16 +2,16 @@ import sbt._
 
 object Dependencies {
 
-  val scalatest     = "org.scalatest"       %% "scalatest"    % "3.0.7"
+  val scalatest     = "org.scalatest"       %% "scalatest"    % "3.0.8"
   val machinist     = "org.typelevel"       %% "machinist"    % "0.6.8"
   val `cats-par`    = "io.chrisdavenport"   %% "cats-par"     % "0.2.1"
-  val zipkin        = "io.zipkin.zipkin2"    % "zipkin"       % "2.12.9"
-  val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "0.0.12"
+  val zipkin        = "io.zipkin.zipkin2"    % "zipkin"       % "2.14.2"
+  val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "0.0.14"
   val random        = "com.evolutiongaming" %% "random"       % "0.0.2"
   val configTools   = "com.evolutiongaming" %% "config-tools" % "1.0.3"
 
   object Skafka {
-    private val version = "4.0.4"
+    private val version = "5.0.1"
     val skafka      = "com.evolutiongaming" %% "skafka"            % version
     val logging     = "com.evolutiongaming" %% "skafka-logging"    % version
     val `play-json` = "com.evolutiongaming" %% "skafka-play-json"  % version
@@ -44,19 +44,19 @@ object Dependencies {
   }
   
   object Scodec {
-    val core = "org.scodec" %% "scodec-core" % "1.11.3"
-    val bits = "org.scodec" %% "scodec-bits" % "1.1.11"
+    val core = "org.scodec" %% "scodec-core" % "1.11.4"
+    val bits = "org.scodec" %% "scodec-bits" % "1.1.12"
   }
 
   object PlayJsonTools {
-    private val version = "0.3.10"
+    private val version = "0.3.11"
     val tools   = "com.evolutiongaming" %% "play-json-tools"   % version
     val generic = "com.evolutiongaming" %% "play-json-generic" % version
   }
 
 
   object KafkaJournal {
-    private val version = "0.0.64"
+    private val version = "0.0.66"
     val journal = "com.evolutiongaming" %% "kafka-journal" % version
   }
 }
