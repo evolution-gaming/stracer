@@ -11,7 +11,7 @@ object Dependencies {
   val configTools   = "com.evolutiongaming" %% "config-tools" % "1.0.3"
 
   object Skafka {
-    private val version = "5.0.1"
+    private val version = "5.0.2"
     val skafka      = "com.evolutiongaming" %% "skafka"            % version
     val logging     = "com.evolutiongaming" %% "skafka-logging"    % version
     val `play-json` = "com.evolutiongaming" %% "skafka-play-json"  % version
