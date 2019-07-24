@@ -28,6 +28,8 @@ object ReportSpan {
 
     def apply(span: Span) = {
 
+      val tags1 = (tags & span.tags).foldRight(Map.empty[String, String]) { (tag, map) => map.updated(tag.name, tag.value) }
+
       val record = SpanRecord(
         traceId = span.traceId,
         spanId = span.spanId,
@@ -39,7 +41,7 @@ object ReportSpan {
         localEndpoint = localEndpoint.some,
         remoteEndpoint = span.remoteEndpoint,
         annotations = List.empty,
-        tags = (tags & span.tags).foldRight(Map.empty[String, String]) { (tag, map) => map.updated(tag.name, tag.value) },
+        tags = tags1,
         debug = None,
         shared = span.shared)
 
