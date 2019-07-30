@@ -21,7 +21,7 @@ crossScalaVersions := Seq("2.12.8")
 resolvers += Resolver.bintrayRepo("evolutiongaming", "maven")
 
 libraryDependencies ++= Seq(
-  Skafka.skafka,
+  skafka,
   zipkin,
   random,
   Scodec.core,
@@ -32,9 +32,6 @@ libraryDependencies ++= Seq(
   Cats.kernel,
   Cats.macros,
   Cats.effect,
-  KafkaJournal.journal,
-  machinist,
-  `cats-par`,
   configTools,
   scalatest % Test)
 

@@ -5,10 +5,9 @@ import cats.data.{NonEmptyList => Nel}
 import cats.effect._
 import cats.effect.implicits._
 import cats.implicits._
-import com.evolutiongaming.catshelper.{Log, LogOf, SerialRef}
+import com.evolutiongaming.catshelper.{FromTry, Log, LogOf, SerialRef}
 import com.evolutiongaming.config.ConfigHelper._
-import com.evolutiongaming.kafka.journal.{KafkaProducer, KafkaProducerOf}
-import com.evolutiongaming.skafka.producer.{ProducerConfig, ProducerRecord}
+import com.evolutiongaming.skafka.producer.{Producer, ProducerConfig, ProducerOf, ProducerRecord}
 import com.evolutiongaming.skafka.{ToBytes, Topic}
 import com.typesafe.config.Config
 import zipkin2.codec.SpanBytesEncoder
@@ -29,9 +28,10 @@ object ReportSpanRecord {
   }
 
 
-  def of[F[_] : Concurrent : ContextShift : Timer : LogOf : KafkaProducerOf](
+  def of[F[_] : Concurrent : ContextShift : Timer : LogOf : FromTry](
     config: Config,
     enabled: F[Boolean],
+    producerOf: ProducerOf[F]
   ): Resource[F, ReportSpanRecord[F]] = {
 
     val reportSpan = for {
@@ -40,17 +40,18 @@ object ReportSpanRecord {
     } yield {
       val topic = config.getOpt[String]("topic") getOrElse "jaeger"
       implicit val toBytes = ToBytesOf(SpanBytesEncoder.THRIFT)
-      of[F](topic, producerConfig, enabled)
+      of[F](topic, producerConfig, enabled, producerOf)
     }
 
     reportSpan getOrElse Resource.pure[F, ReportSpanRecord[F]](empty[F])
   }
 
-  def of[F[_] : Concurrent : Timer : ContextShift : Clock : LogOf : KafkaProducerOf](
+  def of[F[_] : Concurrent : Timer : ContextShift : Clock : LogOf : FromTry](
     topic: Topic,
     producerConfig: ProducerConfig,
-    enabled: F[Boolean])(implicit
-    toBytes: ToBytes[Nel[SpanRecord]]
+    enabled: F[Boolean],
+    producerOf: ProducerOf[F])(implicit
+    toBytes: ToBytes[F, Nel[SpanRecord]]
   ): Resource[F, ReportSpanRecord[F]] = {
 
 
@@ -58,23 +59,23 @@ object ReportSpanRecord {
 
     object State {
 
-      def running(producer: Option[(KafkaProducer[F], F[Unit])]): State = Running(producer)
+      def running(producer: Option[(Producer[F], F[Unit])]): State = Running(producer)
 
       def stopped: State = Stopped
 
 
-      case class Running(producer: Option[(KafkaProducer[F], F[Unit])]) extends State
+      case class Running(producer: Option[(Producer[F], F[Unit])]) extends State
 
       case object Stopped extends State
     }
 
     def producer(log: Log[F]) = {
       for {
-        ab <- KafkaProducerOf[F].apply(producerConfig).allocated
+        a <- producerOf.apply(producerConfig).allocated
       } yield {
-        val (producer, release) = ab
+        val (producer, release) = a
         val release1 = release.handleErrorWith { error =>
-          log.error(s"KafkaProducer.release failed $error", error)
+          log.error(s"Producer.release failed $error", error)
         }
         (producer, release1)
       }
@@ -102,7 +103,7 @@ object ReportSpanRecord {
               }
               state.handleErrorWith { error =>
                 for {
-                  _ <- log.error(s"KafkaProducer failed: $error", error)
+                  _ <- log.error(s"Producer failed: $error", error)
                 } yield {
                   State.running(none)
                 }
@@ -156,7 +157,7 @@ object ReportSpanRecord {
       } yield {
         state match {
           case State.Running(producer) => producer.map { case (producer, _) => producer }
-          case State.Stopped           => none[KafkaProducer[F]]
+          case State.Stopped           => none[Producer[F]]
         }
       }
 
@@ -168,31 +169,31 @@ object ReportSpanRecord {
   }
 
 
-  def apply[F[_] : Concurrent](
+  def apply[F[_] : Concurrent : FromTry](
     topic: Topic,
-    kafkaProducer: F[Option[KafkaProducer[F]]],
+    producer: F[Option[Producer[F]]],
     log: Log[F])(implicit
-    toBytes: ToBytes[Nel[SpanRecord]]
+    toBytes: ToBytes[F, Nel[SpanRecord]]
   ): ReportSpanRecord[F] = new ReportSpanRecord[F] {
 
     def apply(span: SpanRecord): F[Unit] = {
 
-      def send(kafkaProducer: KafkaProducer[F]) = {
+      def send(producer: Producer[F]) = {
         val record = ProducerRecord[String, Nel[SpanRecord]](
           topic = topic,
           key = span.traceId.hex,
           value = Nel.of(span))
 
-        val send = kafkaProducer.send(record).void.handleErrorWith { error =>
-          log.error(s"kafkaProducer.send $span failed: $error, $error")
+        val send = producer.send(record).void.handleErrorWith { error =>
+          log.error(s"Producer.send $span failed: $error, $error")
         }
 
         Concurrent[F].start { send }
       }
 
       for {
-        kafkaProducer <- kafkaProducer
-        _             <- kafkaProducer.foldMapM(send)
+        producer <- producer
+        _        <- producer.foldMapM(send)
       } yield {}
     }
   }
