@@ -2,7 +2,7 @@ package com.evolutiongaming.stracer
 
 import com.evolutiongaming.stracer.implicits._
 
-trait TagsOf[A] {
+trait TagsOf[-A] {
 
   def apply(a: A): Tags
 }
