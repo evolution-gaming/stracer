@@ -3,11 +3,11 @@ import sbt._
 object Dependencies {
 
   val scalatest     = "org.scalatest"       %% "scalatest"    % "3.0.8"
-  val zipkin        = "io.zipkin.zipkin2"    % "zipkin"       % "2.16.2"
-  val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "1.0.0"
+  val zipkin        = "io.zipkin.zipkin2"    % "zipkin"       % "2.17.0"
+  val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "1.0.3"
   val random        = "com.evolutiongaming" %% "random"       % "0.0.5"
   val configTools   = "com.evolutiongaming" %% "config-tools" % "1.0.4"
-  val skafka        = "com.evolutiongaming" %% "skafka"       % "6.1.4"
+  val skafka        = "com.evolutiongaming" %% "skafka"       % "7.0.0"
 
   object Cats {
     private val version = "2.0.0"
