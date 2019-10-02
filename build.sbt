@@ -11,28 +11,29 @@ lazy val root = project
   .settings(thisBuildSettings)
   .aggregate(modules: _*)
 
-lazy val `stracer` = project.settings(
-  publishArtifact := true,
-  libraryDependencies ++= Seq(
-        skafka,
-        zipkin,
-        random,
-        Scodec.core,
-        Scodec.bits,
-        `cats-helper`,
-        Cats.core,
-        Cats.kernel,
-        Cats.macros,
-        Cats.effect,
-        configTools,
-        scalatest % Test
-      )
-)
+lazy val `stracer` = project
+  .settings(skip in publish := false)
+  .settings(
+    libraryDependencies ++= Seq(
+          skafka,
+          zipkin,
+          random,
+          Scodec.core,
+          Scodec.bits,
+          `cats-helper`,
+          Cats.core,
+          Cats.kernel,
+          Cats.macros,
+          Cats.effect,
+          configTools,
+          scalatest % Test
+        )
+  )
 
 lazy val `stracer-play-json` = project
   .dependsOn(`stracer`)
+  .settings(skip in publish := false)
   .settings(
-    publishArtifact := true,
     libraryDependencies ++= Seq(
           PlayJsonTools.tools,
           scalatest % Test
@@ -41,8 +42,8 @@ lazy val `stracer-play-json` = project
 
 lazy val `stracer-circe` = project
   .dependsOn(`stracer`)
+  .settings(skip in publish := false)
   .settings(
-    publishArtifact := true,
     libraryDependencies ++= Circe.all ++ Seq(
               scalatest % Test
             )
@@ -63,6 +64,6 @@ val thisBuildSettings = inThisBuild(
     licenses := Seq(("MIT", url("https://opensource.org/licenses/MIT"))),
     resolvers += Resolver.bintrayRepo("evolutiongaming", "maven"),
     releaseCrossBuild := true,
-    publishArtifact := false
+    skip in publish := true
   )
 )
