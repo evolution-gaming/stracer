@@ -10,15 +10,19 @@ import play.api.libs.json.{JsSuccess, Json}
 class TraceJsonSpec extends FunSuite with Matchers {
 
   test("toJson & fromJson") {
-    val expected = Json.parse(getClass.getResourceAsStream("trace.json"))
+
+    val expected = Json.parse(
+      getClass.getResourceAsStream("trace.json")
+    )
     val timestamp = Instant.ofEpochMilli(1551824013554L)
-    val traceId = TraceId(timestamp, randomInt = 12345, randomLong = 123456789L)
-    val spanId = SpanId(1551818273913L)
+    val traceId   = TraceId(timestamp, randomInt = 12345, randomLong = 123456789L)
+    val spanId    = SpanId(1551818273913L)
     val trace = Trace(
       traceId = traceId,
       spanId = spanId,
       timestamp = timestamp.some,
-      sampling = Sampling.Accept.some)
+      sampling = Sampling.Accept.some
+    )
 
     val json = Json.toJson(trace)
     json shouldEqual expected

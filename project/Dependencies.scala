@@ -30,4 +30,15 @@ object Dependencies {
     val generic = "com.evolutiongaming" %% "play-json-generic" % version
   }
 
+  object Circe {
+    private val version       = "0.12.1"
+    private val versionExtras = "0.12.2"
+
+    val core             = "io.circe" %% "circe-core"           % version
+    val generic          = "io.circe" %% "circe-generic"        % version
+    val parser           = "io.circe" %% "circe-parser"         % version
+    val `generic-extras` = "io.circe" %% "circe-generic-extras" % versionExtras
+
+    val all: Seq[ModuleID] = Seq(core, generic, parser, `generic-extras`)
+  }
 }
