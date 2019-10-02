@@ -12,6 +12,7 @@ lazy val root = project
   .aggregate(modules: _*)
 
 lazy val `stracer` = project.settings(
+  publishArtifact := true,
   libraryDependencies ++= Seq(
         skafka,
         zipkin,
@@ -31,6 +32,7 @@ lazy val `stracer` = project.settings(
 lazy val `stracer-play-json` = project
   .dependsOn(`stracer`)
   .settings(
+    publishArtifact := true,
     libraryDependencies ++= Seq(
           PlayJsonTools.tools,
           scalatest % Test
@@ -40,6 +42,7 @@ lazy val `stracer-play-json` = project
 lazy val `stracer-circe` = project
   .dependsOn(`stracer`)
   .settings(
+    publishArtifact := true,
     libraryDependencies ++= Circe.all ++ Seq(
               scalatest % Test
             )
@@ -59,6 +62,7 @@ val thisBuildSettings = inThisBuild(
     crossScalaVersions := Seq("2.12.10"), //, "2.13.0"),
     licenses := Seq(("MIT", url("https://opensource.org/licenses/MIT"))),
     resolvers += Resolver.bintrayRepo("evolutiongaming", "maven"),
-    releaseCrossBuild := true
+    releaseCrossBuild := true,
+    publishArtifact := false
   )
 )
