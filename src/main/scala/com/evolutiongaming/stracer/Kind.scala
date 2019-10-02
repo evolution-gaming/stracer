@@ -14,7 +14,6 @@ object Kind {
 
   def consumer: Kind = Consumer
 
-
   case object Client extends Kind
 
   case object Server extends Kind
@@ -22,7 +21,6 @@ object Kind {
   case object Producer extends Kind
 
   case object Consumer extends Kind
-
 
   implicit class KindOps(val self: Kind) extends AnyVal {
 

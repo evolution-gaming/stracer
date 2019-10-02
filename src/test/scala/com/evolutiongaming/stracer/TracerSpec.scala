@@ -25,7 +25,7 @@ class TracerSpec extends AsyncFunSuite with Matchers {
 
   tests.unsafeRunSync()
 
-  private def randomTraces[F[_] : Sync : Clock : Random]: F[Unit] = {
+  private def randomTraces[F[_]: Sync: Clock: Random]: F[Unit] =
     for {
       tracer <- Tracer.of[F](true.pure[F])
       trace1 <- tracer.trace()
@@ -42,9 +42,8 @@ class TracerSpec extends AsyncFunSuite with Matchers {
         trace1.spanId should not equal trace2.spanId
       }
     }
-  }
 
-  private def returnNone[F[_] : Sync : Clock : Random]: F[Unit] = {
+  private def returnNone[F[_]: Sync: Clock: Random]: F[Unit] =
     for {
       tracer <- Tracer.of[F](false.pure[F])
       trace  <- tracer.trace()
@@ -52,5 +51,4 @@ class TracerSpec extends AsyncFunSuite with Matchers {
       trace shouldEqual none
       ()
     }
-  }
 }

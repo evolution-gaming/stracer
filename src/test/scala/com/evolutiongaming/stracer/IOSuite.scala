@@ -18,9 +18,8 @@ object IOSuite {
   implicit val timerIO: Timer[IO]               = IO.timer(executor)
   implicit val parallel: Parallel[IO]           = IO.ioParallel
 
-  def runIO[A](io: IO[A], timeout: FiniteDuration = Timeout): Future[Succeeded.type] = {
+  def runIO[A](io: IO[A], timeout: FiniteDuration = Timeout): Future[Succeeded.type] =
     io.timeout(timeout).as(Succeeded).unsafeToFuture
-  }
 
   implicit class IOOps[A](val self: IO[A]) extends AnyVal {
     def run(timeout: FiniteDuration = Timeout): Future[Succeeded.type] = runIO(self, timeout)

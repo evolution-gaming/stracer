@@ -15,17 +15,13 @@ object ToHex {
     def apply(a: Hex) = a
   }
 
-
   def apply[A](implicit F: ToHex[A]): ToHex[A] = F
-
 
   def fromEncoder[A](encoder: Encoder[A]): ToHex[A] = new ToHex[A] {
 
-    def apply(a: A) = {
+    def apply(a: A) =
       encoder.encode(a).require.bytes.toHex
-    }
   }
-
 
   implicit class ToHexOps[A](val self: ToHex[A]) extends AnyVal {
 

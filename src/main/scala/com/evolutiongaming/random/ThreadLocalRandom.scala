@@ -7,7 +7,7 @@ import com.evolutiongaming.catshelper.{ThreadLocalOf, ThreadLocalRef}
 
 object ThreadLocalRandom {
 
-  def of[F[_] : FlatMap : Clock : ThreadLocalOf]: F[Random[F]] = {
+  def of[F[_]: FlatMap: Clock: ThreadLocalOf]: F[Random[F]] = {
     val random = Random.State.fromClock[F]()
     for {
       random <- ThreadLocalOf[F].apply(random)

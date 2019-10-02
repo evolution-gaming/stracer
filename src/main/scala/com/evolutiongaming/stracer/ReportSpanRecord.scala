@@ -21,14 +21,13 @@ trait ReportSpanRecord[F[_]] {
 
 object ReportSpanRecord {
 
-  def empty[F[_] : Applicative]: ReportSpanRecord[F] = const(().pure[F])
+  def empty[F[_]: Applicative]: ReportSpanRecord[F] = const(().pure[F])
 
   def const[F[_]](value: F[Unit]): ReportSpanRecord[F] = new ReportSpanRecord[F] {
     def apply(span: SpanRecord) = value
   }
 
-
-  def of[F[_] : Concurrent : ContextShift : Timer : LogOf : FromTry](
+  def of[F[_]: Concurrent: ContextShift: Timer: LogOf: FromTry](
     config: Config,
     enabled: F[Boolean],
     producerOf: ProducerOf[F]
@@ -38,7 +37,7 @@ object ReportSpanRecord {
       _              <- config.getOpt[Boolean]("enabled").filter(identity)
       producerConfig <- config.getOpt[Config]("kafka.producer").map(ProducerConfig(_))
     } yield {
-      val topic = config.getOpt[String]("topic") getOrElse "jaeger"
+      val topic            = config.getOpt[String]("topic") getOrElse "jaeger"
       implicit val toBytes = ToBytesOf(SpanBytesEncoder.THRIFT)
       of[F](topic, producerConfig, enabled, producerOf)
     }
@@ -46,14 +45,15 @@ object ReportSpanRecord {
     reportSpan getOrElse Resource.pure[F, ReportSpanRecord[F]](empty[F])
   }
 
-  def of[F[_] : Concurrent : Timer : ContextShift : Clock : LogOf : FromTry](
+  def of[F[_]: Concurrent: Timer: ContextShift: Clock: LogOf: FromTry](
     topic: Topic,
     producerConfig: ProducerConfig,
     enabled: F[Boolean],
-    producerOf: ProducerOf[F])(implicit
+    producerOf: ProducerOf[F]
+  )(
+    implicit
     toBytes: ToBytes[F, Nel[SpanRecord]]
   ): Resource[F, ReportSpanRecord[F]] = {
-
 
     sealed trait State
 
@@ -63,13 +63,12 @@ object ReportSpanRecord {
 
       def stopped: State = Stopped
 
-
       case class Running(producer: Option[(Producer[F], F[Unit])]) extends State
 
       case object Stopped extends State
     }
 
-    def producer(log: Log[F]) = {
+    def producer(log: Log[F]) =
       for {
         a <- producerOf.apply(producerConfig).allocated
       } yield {
@@ -79,11 +78,10 @@ object ReportSpanRecord {
         }
         (producer, release1)
       }
-    }
 
-    def update(stateRef: SerialRef[F, State], enabled: Boolean, log: Log[F]) = {
+    def update(stateRef: SerialRef[F, State], enabled: Boolean, log: Log[F]) =
       stateRef.update {
-        case State.Stopped        => State.stopped.pure[F]
+        case State.Stopped => State.stopped.pure[F]
         case state: State.Running =>
           state.producer match {
             case Some((_, release)) if !enabled =>
@@ -94,7 +92,7 @@ object ReportSpanRecord {
                 State.running(none)
               }
 
-            case None if enabled                =>
+            case None if enabled =>
               val state = for {
                 _        <- log.info("enable")
                 producer <- producer(log)
@@ -112,14 +110,13 @@ object ReportSpanRecord {
             case _ => (state: State).pure[F]
           }
       }
-    }
 
-    def background(stateRef: SerialRef[F, State], log: Log[F]) = {
+    def background(stateRef: SerialRef[F, State], log: Log[F]) =
       ().tailRecM { _ =>
         for {
           state <- stateRef.get
           result <- state match {
-            case State.Stopped    => ().asRight[Unit].pure[F]
+            case State.Stopped => ().asRight[Unit].pure[F]
             case _: State.Running =>
               for {
                 enabled <- enabled
@@ -131,17 +128,16 @@ object ReportSpanRecord {
           }
         } yield result
       }
-    }
 
     val resource = for {
       log      <- LogOf[F].apply(getClass)
       stateRef <- SerialRef[F].of(State.running(none))
-      release   = stateRef.update {
+      release = stateRef.update {
         case State.Running(Some((_, release))) => release.as(State.stopped)
         case State.Running(None)               => State.stopped.pure[F]
         case State.Stopped                     => State.stopped.pure[F]
       }
-      fiber    <- Concurrent[F].start { Sync[F].guarantee(background(stateRef, log))(release) }
+      fiber <- Concurrent[F].start { Sync[F].guarantee(background(stateRef, log))(release) }
     } yield {
       val release1 = {
         val release1 = for {
@@ -168,21 +164,15 @@ object ReportSpanRecord {
     Resource(resource)
   }
 
-
-  def apply[F[_] : Concurrent : FromTry](
-    topic: Topic,
-    producer: F[Option[Producer[F]]],
-    log: Log[F])(implicit
+  def apply[F[_]: Concurrent: FromTry](topic: Topic, producer: F[Option[Producer[F]]], log: Log[F])(
+    implicit
     toBytes: ToBytes[F, Nel[SpanRecord]]
   ): ReportSpanRecord[F] = new ReportSpanRecord[F] {
 
     def apply(span: SpanRecord): F[Unit] = {
 
       def send(producer: Producer[F]) = {
-        val record = ProducerRecord[String, Nel[SpanRecord]](
-          topic = topic,
-          key = span.traceId.hex,
-          value = Nel.of(span))
+        val record = ProducerRecord[String, Nel[SpanRecord]](topic = topic, key = span.traceId.hex, value = Nel.of(span))
 
         val send = producer.send(record).void.handleErrorWith { error =>
           log.error(s"Producer.send $span failed: $error, $error")

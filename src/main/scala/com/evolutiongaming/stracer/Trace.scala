@@ -6,4 +6,5 @@ final case class Trace(
   traceId: TraceId,
   spanId: SpanId,
   timestamp: Option[Instant],
-  sampling: Option[Sampling] = None)
+  sampling: Option[Sampling] = None
+)

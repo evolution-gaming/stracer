@@ -31,21 +31,27 @@ class SpanRecordSpec extends FunSuite with Matchers {
       localEndpoint = Endpoint(
         serviceName = "local".some,
         ip = "0.0.0.0".some,
-        port = 0.some).some,
+        port = 0.some
+      ).some,
       remoteEndpoint = Endpoint(
         serviceName = "remote".some,
         ip = "1.1.1.1".some,
-        port = 1.some).some,
+        port = 1.some
+      ).some,
       annotations = List(
         Annotation("1", timestamp),
-        Annotation("2", timestamp)),
+        Annotation("2", timestamp)
+      ),
       tags = Map(
         ("key-1", "val-1"),
-        ("key-2", "val-2")),
+        ("key-2", "val-2")
+      ),
       debug = true.some,
-      shared = false.some)
+      shared = false.some
+    )
 
-    val expected = SpanJ.newBuilder()
+    val expected = SpanJ
+      .newBuilder()
       .traceId("5c7ef48d00000002000001694f93b479")
       .parentId("000001694f93b479")
       .id("000001694f93b479")
@@ -54,17 +60,21 @@ class SpanRecordSpec extends FunSuite with Matchers {
       .timestamp(timestamp.micros)
       .duration(1000)
       .localEndpoint(
-        EndpointJ.newBuilder()
+        EndpointJ
+          .newBuilder()
           .serviceName("local")
           .ip("0.0.0.0")
           .port(0)
-          .build())
+          .build()
+      )
       .remoteEndpoint(
-        EndpointJ.newBuilder()
+        EndpointJ
+          .newBuilder()
           .serviceName("remote")
           .ip("1.1.1.1")
           .port(1)
-          .build())
+          .build()
+      )
       .addAnnotation(timestamp.micros, "1")
       .addAnnotation(timestamp.micros, "2")
       .putTag("key-1", "val-1")

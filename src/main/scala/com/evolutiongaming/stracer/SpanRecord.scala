@@ -20,14 +20,16 @@ final case class SpanRecord(
   annotations: List[Annotation] = List.empty,
   tags: Map[String, String] = Map.empty,
   debug: Option[Boolean] = None,
-  shared: Option[Boolean] = None)
+  shared: Option[Boolean] = None
+)
 
 object SpanRecord {
 
   implicit class SpanOps(val self: SpanRecord) extends AnyVal {
 
-    def toJava: SpanJ = {
-      SpanJ.newBuilder()
+    def toJava: SpanJ =
+      SpanJ
+        .newBuilder()
         .traceId(self.traceId.hex)
         .parentId(self.parentId)
         .id(self.spanId.hex)
@@ -42,9 +44,7 @@ object SpanRecord {
         .debug(self.debug)
         .shared(self.shared)
         .build()
-    }
   }
-
 
   implicit class SpanBuilderOps(val self: SpanJ.Builder) extends AnyVal {
 
@@ -58,29 +58,28 @@ object SpanRecord {
 
     def duration(a: Option[FiniteDuration]): SpanJ.Builder = a.fold(self)(a => self.duration(a.toMicros))
 
-    def localEndpoint(a: Option[Endpoint]): SpanJ.Builder = {
+    def localEndpoint(a: Option[Endpoint]): SpanJ.Builder =
       a.fold(self) { a =>
         if (a == Endpoint.Empty) self
         else self.localEndpoint(a.toJava)
       }
-    }
 
-    def remoteEndpoint(a: Option[Endpoint]): SpanJ.Builder = {
+    def remoteEndpoint(a: Option[Endpoint]): SpanJ.Builder =
       a.fold(self) { a =>
         if (a == Endpoint.Empty) self
         else self.remoteEndpoint(a.toJava)
       }
-    }
 
-    def annotations(a: List[Annotation]): SpanJ.Builder = {
+    def annotations(a: List[Annotation]): SpanJ.Builder =
       if (a.isEmpty) self
-      else a.foldLeft(self) { (self, a) => self.addAnnotation(a.timestamp.micros, a.value) }
-    }
+      else
+        a.foldLeft(self) { (self, a) =>
+          self.addAnnotation(a.timestamp.micros, a.value)
+        }
 
-    def tags(a: Map[String, String]): SpanJ.Builder = {
+    def tags(a: Map[String, String]): SpanJ.Builder =
       if (a.isEmpty) self
       else a.foldLeft(self) { case (self, (key, value)) => self.putTag(key, value) }
-    }
 
     def debug(a: Option[Boolean]): SpanJ.Builder = a.fold(self)(self.debug)
 
