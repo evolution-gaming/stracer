@@ -8,25 +8,27 @@ lazy val modules: List[ProjectReference] = List(
 
 lazy val root = project
   .in(file("."))
+  .settings(skip in publish := true)
   .settings(thisBuildSettings)
   .aggregate(modules: _*)
 
-lazy val `stracer` = project.settings(
-  libraryDependencies ++= Seq(
-        skafka,
-        zipkin,
-        random,
-        Scodec.core,
-        Scodec.bits,
-        `cats-helper`,
-        Cats.core,
-        Cats.kernel,
-        Cats.macros,
-        Cats.effect,
-        configTools,
-        scalatest % Test
-      )
-)
+lazy val `stracer` = project
+  .settings(
+    libraryDependencies ++= Seq(
+          skafka,
+          zipkin,
+          random,
+          Scodec.core,
+          Scodec.bits,
+          `cats-helper`,
+          Cats.core,
+          Cats.kernel,
+          Cats.macros,
+          Cats.effect,
+          configTools,
+          scalatest % Test
+        )
+  )
 
 lazy val `stracer-play-json` = project
   .dependsOn(`stracer`)
