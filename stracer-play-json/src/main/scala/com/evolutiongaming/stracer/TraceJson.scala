@@ -7,7 +7,7 @@ import play.api.libs.json._
 object TraceJson {
 
   implicit val SamplingFormat: Format[Sampling] = {
-    def name(a: Sampling) = a.toString.toLowerCase
+    def name(a: Sampling): String = a.toString.toLowerCase
 
     val map = Sampling.Values.map(a => (name(a), a)).toMap
     ObjectFormat(map.get, name)
