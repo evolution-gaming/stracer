@@ -19,19 +19,16 @@ object TraceJson {
 
   implicit val TraceFormat: OFormat[Trace] = Json.format[Trace]
 
-
   private def formatOf[A](implicit toHex: ToHex[A], fromHex: FromHex[A]): Format[A] = new Format[A] {
 
     def writes(x: A): JsValue = JsString(toHex(x))
 
-    def reads(json: JsValue): JsResult[A] = {
+    def reads(json: JsValue): JsResult[A] =
       for {
         s <- json.validate[String]
         a <- fromHex(s).jsResult
       } yield a
-    }
   }
-
 
   implicit class EitherOps[A](val self: Either[String, A]) extends AnyVal {
 

@@ -39,28 +39,29 @@ class ReportSpanSpec extends FunSuite with Matchers {
       "name",
       timestamp,
       duration = duration.some,
-      tags = ("name2" -> "value") & ("name3" -> "value3"))
+      tags = ("name2" -> "value") & ("name3" -> "value3")
+    )
 
-    val reportSpan = ReportSpan[StateT](localEndpoint, tags, reportSpanRecord,  Kind.producer)
+    val reportSpan = ReportSpan[StateT](localEndpoint, tags, reportSpanRecord, Kind.producer)
 
     val (state, _) = reportSpan(span).run(State.Empty)
     val record = SpanRecord(
       traceId = traceId,
-        spanId = spanId,
-        parentId = none,
-        kind = Kind.producer.some,
-        name = "name".some,
-        timestamp = timestamp.some,
-        duration = duration.some,
-        localEndpoint = localEndpoint.some,
-        remoteEndpoint = none,
-        annotations = List.empty,
-        tags = Map(("name1", "value1"), ("name2", "value"), ("name3", "value3")),
-        debug = None,
-        shared = None)
+      spanId = spanId,
+      parentId = none,
+      kind = Kind.producer.some,
+      name = "name".some,
+      timestamp = timestamp.some,
+      duration = duration.some,
+      localEndpoint = localEndpoint.some,
+      remoteEndpoint = none,
+      annotations = List.empty,
+      tags = Map(("name1", "value1"), ("name2", "value"), ("name3", "value3")),
+      debug = None,
+      shared = None
+    )
     state shouldEqual State(List(record))
   }
-
 
 }
 
@@ -71,7 +72,6 @@ object ReportSpanSpec {
   object State {
     val Empty: State = State(List.empty)
   }
-
 
   type StateT[A] = cats.data.StateT[cats.Id, State, A]
 

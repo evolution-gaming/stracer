@@ -9,11 +9,10 @@ object TracingHelper {
 
     def micros: Long = {
       val seconds = TimeUnit.SECONDS.toMicros(self.getEpochSecond)
-      val nanos = TimeUnit.NANOSECONDS.toMicros(self.getNano.toLong)
+      val nanos   = TimeUnit.NANOSECONDS.toMicros(self.getNano.toLong)
       seconds + nanos
     }
   }
-
 
   implicit class EitherStringOps[A](val self: Either[String, A]) extends AnyVal {
 

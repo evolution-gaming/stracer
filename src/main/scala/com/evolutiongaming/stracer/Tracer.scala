@@ -19,23 +19,20 @@ object Tracer {
 
   def apply[F[_]](implicit F: Tracer[F]): Tracer[F] = F
 
-
-  def empty[F[_] : Applicative]: Tracer[F] = const(none[Trace].pure[F], none[SpanId].pure[F])
-
+  def empty[F[_]: Applicative]: Tracer[F] = const(none[Trace].pure[F], none[SpanId].pure[F])
 
   def const[F[_]](trace: F[Option[Trace]], spanId: F[Option[SpanId]]): Tracer[F] = {
     val spanId1 = spanId
-    val trace1 = trace
+    val trace1  = trace
     new Tracer[F] {
-      
+
       def spanId = spanId1
 
       def trace(sampling: Option[Sampling]) = trace1
     }
   }
 
-
-  def of[F[_] : Sync : Clock : Random](enabled: F[Boolean], config: Config): F[Tracer[F]] = {
+  def of[F[_]: Sync: Clock: Random](enabled: F[Boolean], config: Config): F[Tracer[F]] = {
     val tracer = for {
       _ <- config.getOpt[Boolean]("enabled").filter(identity)
     } yield {
@@ -44,18 +41,16 @@ object Tracer {
     tracer getOrElse empty[F].pure[F]
   }
 
-
-  def of[F[_] : Sync : Clock : Random](enabled: F[Boolean]): F[Tracer[F]] = {
+  def of[F[_]: Sync: Clock: Random](enabled: F[Boolean]): F[Tracer[F]] =
     apply[F](enabled).pure[F]
-  }
 
+  def apply[F[_]: Sync: Clock: Random](enabled: F[Boolean]): Tracer[F] = new Tracer[F] {
 
-  def apply[F[_] : Sync : Clock : Random](enabled: F[Boolean]): Tracer[F] = new Tracer[F] {
-
-    def spanId = {
+    def spanId =
       for {
         enabled <- enabled
-        spanId  <- if (!enabled) none[SpanId].pure[F] else {
+        spanId <- if (!enabled) none[SpanId].pure[F]
+        else {
           for {
             long <- Random[F].long
           } yield {
@@ -63,23 +58,22 @@ object Tracer {
           }
         }
       } yield spanId
-    }
 
-    def trace(sampling: Option[Sampling]) = {
+    def trace(sampling: Option[Sampling]) =
       for {
         enabled <- enabled
-        trace   <- if (!enabled) none[Trace].pure[F] else {
+        trace <- if (!enabled) none[Trace].pure[F]
+        else {
           for {
             timestamp <- Clock[F].instant
             long      <- Random[F].long
             int       <- Random[F].int
           } yield {
-            val spanId = SpanId(long)
+            val spanId  = SpanId(long)
             val traceId = TraceId(timestamp, int, long)
             Trace(traceId, spanId, timestamp.some, sampling).some
           }
         }
       } yield trace
-    }
   }
 }

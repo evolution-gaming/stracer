@@ -3,14 +3,13 @@ package com.evolutiongaming.stracer
 import com.evolutiongaming.stracer.hex.implicits._
 import com.evolutiongaming.stracer.hex.{FromHex, Hex, ToHex}
 
-abstract sealed case class SpanId(hex: String)
+sealed abstract case class SpanId(hex: String)
 
 object SpanId {
 
   implicit val SpanIdToHex: ToHex[SpanId] = ToHex[Hex].imap(_.hex)
 
   implicit val SpanIdFromHex: FromHex[SpanId] = FromHex[Long].map(apply)
-
 
   def apply(value: Long): SpanId = {
 

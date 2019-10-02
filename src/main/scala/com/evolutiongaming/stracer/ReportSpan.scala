@@ -11,13 +11,11 @@ trait ReportSpan[F[_]] {
 
 object ReportSpan {
 
-  def empty[F[_] : Applicative]: ReportSpan[F] = const(().pure[F])
-
+  def empty[F[_]: Applicative]: ReportSpan[F] = const(().pure[F])
 
   def const[F[_]](value: F[Unit]): ReportSpan[F] = new ReportSpan[F] {
     def apply(span: Span) = value
   }
-
 
   def apply[F[_]](
     localEndpoint: Endpoint,
@@ -28,7 +26,9 @@ object ReportSpan {
 
     def apply(span: Span) = {
 
-      val tags1 = (tags & span.tags).foldRight(Map.empty[String, String]) { (tag, map) => map.updated(tag.name, tag.value) }
+      val tags1 = (tags & span.tags).foldRight(Map.empty[String, String]) { (tag, map) =>
+        map.updated(tag.name, tag.value)
+      }
 
       val record = SpanRecord(
         traceId = span.traceId,
@@ -43,7 +43,8 @@ object ReportSpan {
         annotations = List.empty,
         tags = tags1,
         debug = None,
-        shared = span.shared)
+        shared = span.shared
+      )
 
       reportSpan(record)
     }

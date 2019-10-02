@@ -4,7 +4,6 @@ import java.time.Instant
 
 import scala.concurrent.duration.FiniteDuration
 
-
 final case class Span(
   traceId: TraceId,
   spanId: SpanId,
@@ -14,4 +13,5 @@ final case class Span(
   duration: Option[FiniteDuration] = None,
   remoteEndpoint: Option[Endpoint] = None,
   tags: Tags = List.empty,
-  shared: Option[Boolean] = None)
+  shared: Option[Boolean] = None
+)

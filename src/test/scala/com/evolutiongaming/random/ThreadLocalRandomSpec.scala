@@ -12,14 +12,13 @@ class ThreadLocalRandomSpec extends AsyncFunSuite with Matchers {
     randomTraces[IO].run()
   }
 
-  private def randomTraces[F[_] : Sync : Clock : ThreadLocalOf]: F[Unit] = {
+  private def randomTraces[F[_]: Sync: Clock: ThreadLocalOf]: F[Unit] =
     for {
       random <- ThreadLocalRandom.of[F]
-      n1 <- random.int
-      n2 <- random.int
+      n1     <- random.int
+      n2     <- random.int
     } yield {
       n1 should not equal n2
       ()
     }
-  }
 }
