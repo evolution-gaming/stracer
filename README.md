@@ -59,7 +59,7 @@ trait ReportSpan[F[_]] {
 ```scala
 resolvers += Resolver.bintrayRepo("evolutiongaming", "maven")
 
-libraryDependencies += "com.evolutiongaming" %% "stracer" % "1.0.0"
-libraryDependencies += "com.evolutiongaming" %% "stracer" % "1.0.0"
-libraryDependencies += "com.evolutiongaming" %% "stracer" % "1.0.0"
+libraryDependencies += "com.evolutiongaming" %% "stracer"           % "1.0.0"
+libraryDependencies += "com.evolutiongaming" %% "stracer-play-json" % "1.0.0"
+libraryDependencies += "com.evolutiongaming" %% "stracer-circe"     % "1.0.0"
 ```
