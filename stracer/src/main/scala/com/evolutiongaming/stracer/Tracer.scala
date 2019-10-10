@@ -1,12 +1,15 @@
 package com.evolutiongaming.stracer
 
-import cats.Applicative
-import cats.effect.{Clock, Sync}
+import cats.{Applicative, Monad}
+import cats.effect.Clock
 import cats.implicits._
 import com.evolutiongaming.catshelper.ClockHelper._
-import com.evolutiongaming.config.ConfigHelper._
 import com.evolutiongaming.random.Random
+import com.evolutiongaming.stracer.util.FromConfigReaderResult
+import com.evolutiongaming.stracer.util.PureConfigHelper._
 import com.typesafe.config.Config
+import pureconfig.{ConfigReader, ConfigSource}
+import pureconfig.generic.semiauto.deriveReader
 
 trait Tracer[F[_]] {
 
@@ -32,48 +35,84 @@ object Tracer {
     }
   }
 
-  def of[F[_]: Sync: Clock: Random](enabled: F[Boolean], config: Config): F[Tracer[F]] = {
-    val tracer = for {
-      _ <- config.getOpt[Boolean]("enabled").filter(identity)
-    } yield {
-      of[F](enabled)
-    }
-    tracer getOrElse empty[F].pure[F]
+
+  def of[F[_]: Monad: Clock: Random: FromConfigReaderResult](
+    runtimeConf: F[RuntimeConf],
+    config: Config
+  ): F[Tracer[F]] = {
+    def startupConf = ConfigSource
+      .fromConfig(config)
+      .load[StartupConf]
+    for {
+      tracerConfig <- startupConf.liftTo[F]
+      tracer       <- of(tracerConfig, runtimeConf)
+    } yield tracer
   }
 
-  def of[F[_]: Sync: Clock: Random](enabled: F[Boolean]): F[Tracer[F]] =
-    apply[F](enabled).pure[F]
 
-  def apply[F[_]: Sync: Clock: Random](enabled: F[Boolean]): Tracer[F] = new Tracer[F] {
+  def of[F[_]: Monad: Clock: Random](
+    startupConf: StartupConf,
+    runtimeConf: F[RuntimeConf]
+  ): F[Tracer[F]] = {
 
-    def spanId =
-      for {
-        enabled <- enabled
-        spanId <- if (!enabled) none[SpanId].pure[F]
-        else {
-          for {
-            long <- Random[F].long
-          } yield {
-            SpanId(long).some
-          }
+    val tracer = if (startupConf.enabled) apply[F](runtimeConf) else empty[F]
+    tracer.pure[F]
+  }
+
+
+  def apply[F[_]: Monad: Clock: Random](conf: F[RuntimeConf]): Tracer[F] = {
+    new Tracer[F] {
+
+      val spanId = {
+
+        def spanId = for {
+          long <- Random[F].long
+        } yield {
+          SpanId(long).some
         }
-      } yield spanId
 
-    def trace(sampling: Option[Sampling]) =
-      for {
-        enabled <- enabled
-        trace <- if (!enabled) none[Trace].pure[F]
-        else {
-          for {
-            timestamp <- Clock[F].instant
-            long      <- Random[F].long
-            int       <- Random[F].int
-          } yield {
-            val spanId  = SpanId(long)
-            val traceId = TraceId(timestamp, int, long)
-            Trace(traceId, spanId, timestamp.some, sampling).some
-          }
+        for {
+          conf    <- conf
+          enabled  = conf.enabled
+          spanId  <- if (!enabled) none[SpanId].pure[F] else spanId
+        } yield spanId
+      }
+
+      def trace(sampling: Option[Sampling]) = {
+
+        def trace = for {
+          timestamp <- Clock[F].instant
+          long      <- Random[F].long
+          int       <- Random[F].int
+        } yield {
+          val spanId  = SpanId(long)
+          val traceId = TraceId(timestamp, int, long)
+          Trace(traceId, spanId, timestamp.some, sampling).some
         }
-      } yield trace
+
+        for {
+          conf    <- conf
+          enabled  = conf.enabled
+          trace   <- if (!enabled) none[Trace].pure[F] else trace
+        } yield trace
+      }
+    }
+  }
+
+
+  final case class StartupConf(enabled: Boolean = false)
+
+  object StartupConf {
+
+    val default: StartupConf = StartupConf()
+
+    implicit val configReaderStartupConf: ConfigReader[StartupConf] = deriveReader
+  }
+
+
+  final case class RuntimeConf(enabled: Boolean = true)
+
+  object RuntimeConf {
+    val default: RuntimeConf = RuntimeConf()
   }
 }

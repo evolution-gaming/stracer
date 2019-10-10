@@ -15,37 +15,31 @@ lazy val root = project
 lazy val `stracer` = project
   .settings(
     libraryDependencies ++= Seq(
-          skafka,
-          zipkin,
-          random,
-          Scodec.core,
-          Scodec.bits,
-          `cats-helper`,
-          Cats.core,
-          Cats.kernel,
-          Cats.macros,
-          Cats.effect,
-          configTools,
-          scalatest % Test
-        )
-  )
+      skafka,
+      zipkin,
+      random,
+      Scodec.core,
+      Scodec.bits,
+      `cats-helper`,
+      Cats.core,
+      Cats.kernel,
+      Cats.macros,
+      Cats.effect,
+      configTools,
+      Pureconfig.pureconfig,
+      scalatest % Test))
 
 lazy val `stracer-play-json` = project
   .dependsOn(`stracer`)
   .settings(
     libraryDependencies ++= Seq(
-          PlayJsonTools.tools,
-          scalatest % Test
-        )
-  )
+      PlayJsonTools.tools,
+      scalatest % Test))
 
 lazy val `stracer-circe` = project
   .dependsOn(`stracer`)
   .settings(
-    libraryDependencies ++= Circe.all ++ Seq(
-              scalatest % Test
-            )
-  )
+    libraryDependencies ++= Circe.all ++ Seq(scalatest % Test))
 
 val thisBuildSettings = inThisBuild(
   Seq(

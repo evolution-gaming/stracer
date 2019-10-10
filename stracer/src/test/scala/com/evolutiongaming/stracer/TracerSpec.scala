@@ -1,11 +1,13 @@
 package com.evolutiongaming.stracer
 
+import cats.Monad
 import cats.effect._
 import cats.implicits._
 import com.evolutiongaming.random.{Random, ThreadLocalRandom}
 import com.evolutiongaming.stracer.IOSuite._
 import org.scalatest.funsuite.AsyncFunSuite
 import org.scalatest.matchers.should.Matchers
+import com.evolutiongaming.stracer.Tracer.RuntimeConf
 
 class TracerSpec extends AsyncFunSuite with Matchers {
 
@@ -26,15 +28,15 @@ class TracerSpec extends AsyncFunSuite with Matchers {
 
   tests.unsafeRunSync()
 
-  private def randomTraces[F[_]: Sync: Clock: Random]: F[Unit] =
+  private def randomTraces[F[_]: Monad: Clock: Random] = {
+    val tracer = Tracer(RuntimeConf.default.pure[F])
     for {
-      tracer <- Tracer.of[F](true.pure[F])
       trace1 <- tracer.trace()
+      _      =  trace1 shouldBe a[Some[_]]
       trace2 <- tracer.trace()
+      _      =  trace2 shouldBe a[Some[_]]
     } yield {
-      trace1 shouldBe a[Some[_]]
-      trace2 shouldBe a[Some[_]]
-      val _ = for {
+      for {
         trace1 <- trace1
         trace2 <- trace2
       } yield {
@@ -43,13 +45,14 @@ class TracerSpec extends AsyncFunSuite with Matchers {
         trace1.spanId should not equal trace2.spanId
       }
     }
+  }
 
-  private def returnNone[F[_]: Sync: Clock: Random]: F[Unit] =
+  private def returnNone[F[_]: Monad: Clock: Random] = {
+    val tracer = Tracer(RuntimeConf(enabled = false).pure[F])
     for {
-      tracer <- Tracer.of[F](false.pure[F])
       trace  <- tracer.trace()
     } yield {
       trace shouldEqual none
-      ()
     }
+  }
 }

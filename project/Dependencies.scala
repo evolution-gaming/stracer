@@ -41,4 +41,10 @@ object Dependencies {
 
     val all: Seq[ModuleID] = Seq(core, generic, parser, `generic-extras`)
   }
+
+  object Pureconfig {
+    private val version = "0.12.1"
+    val pureconfig = "com.github.pureconfig" %% "pureconfig"      % version
+    val cats       = "com.github.pureconfig" %% "pureconfig-cats" % version
+  }
 }
