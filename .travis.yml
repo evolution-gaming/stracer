@@ -1,11 +1,11 @@
-dist: trusty
+dist: xenial
 sudo: false
 
 language: scala
 
 scala:
   - 2.12.10
-#  - 2.13.0
+  - 2.13.0
 
 jdk:
   - openjdk11
