@@ -13,7 +13,7 @@ class TraceJsonSpec extends FunSuite with Matchers {
   test("toJson & fromJson") {
 
     val resourceStream = getClass.getResourceAsStream("trace.json")
-    val expected       = parse(Source.fromInputStream(resourceStream).mkString).right.get
+    val expected       = parse(Source.fromInputStream(resourceStream).mkString).getOrElse("No file found.")
     val timestamp      = Instant.ofEpochMilli(1551824013554L)
     val traceId        = TraceId(timestamp, randomInt = 12345, randomLong = 123456789L)
     val spanId         = SpanId(1551818273913L)
