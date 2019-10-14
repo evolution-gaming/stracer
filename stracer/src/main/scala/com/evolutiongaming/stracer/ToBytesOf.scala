@@ -5,7 +5,7 @@ import cats.effect.Sync
 import com.evolutiongaming.skafka.{ToBytes, Topic}
 import zipkin2.codec.SpanBytesEncoder
 
-import scala.collection.JavaConverters._
+import com.evolutiongaming.stracer.compat.CollectionConverters._
 
 object ToBytesOf {
 
