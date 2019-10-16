@@ -61,7 +61,6 @@ val thisBuildSettings = inThisBuild(
     crossScalaVersions := Seq("2.12.10", "2.13.1"),
     releaseCrossBuild := true,
     licenses := Seq(("MIT", url("https://opensource.org/licenses/MIT"))),
-    resolvers += Resolver.bintrayRepo("evolutiongaming", "maven"),
-    releaseCrossBuild := true
+    resolvers += Resolver.bintrayRepo("evolutiongaming", "maven")
   )
 )
