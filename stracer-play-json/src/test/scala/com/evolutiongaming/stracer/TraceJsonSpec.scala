@@ -4,10 +4,11 @@ import java.time.Instant
 
 import cats.implicits._
 import com.evolutiongaming.stracer.TraceJson.TraceFormat
-import org.scalatest.{FunSuite, Matchers}
 import play.api.libs.json.{JsSuccess, Json}
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class TraceJsonSpec extends FunSuite with Matchers {
+class TraceJsonSpec extends AnyFunSuite with Matchers {
 
   test("toJson & fromJson") {
 
