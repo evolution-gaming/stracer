@@ -4,7 +4,8 @@ import cats.effect._
 import cats.implicits._
 import com.evolutiongaming.random.{Random, ThreadLocalRandom}
 import com.evolutiongaming.stracer.IOSuite._
-import org.scalatest.{AsyncFunSuite, Matchers}
+import org.scalatest.funsuite.AsyncFunSuite
+import org.scalatest.matchers.should.Matchers
 
 class TracerSpec extends AsyncFunSuite with Matchers {
 

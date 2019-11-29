@@ -4,11 +4,12 @@ import java.time.Instant
 
 import cats.implicits._
 import com.evolutiongaming.stracer.implicits._
-import org.scalatest.{FunSuite, Matchers}
 
 import scala.concurrent.duration._
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class ReportSpanSpec extends FunSuite with Matchers {
+class ReportSpanSpec extends AnyFunSuite with Matchers {
 
   import ReportSpanSpec._
 

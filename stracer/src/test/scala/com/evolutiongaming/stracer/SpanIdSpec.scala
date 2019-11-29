@@ -1,8 +1,9 @@
 package com.evolutiongaming.stracer
 
-import org.scalatest.{FunSuite, Matchers}
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class SpanIdSpec extends FunSuite with Matchers {
+class SpanIdSpec extends AnyFunSuite with Matchers {
 
   private val spanId = SpanId(1551818273913L)
 

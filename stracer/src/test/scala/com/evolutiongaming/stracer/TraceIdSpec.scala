@@ -3,9 +3,10 @@ package com.evolutiongaming.stracer
 import java.time.Instant
 
 import cats.implicits._
-import org.scalatest.{FunSuite, Matchers}
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class TraceIdSpec extends FunSuite with Matchers {
+class TraceIdSpec extends AnyFunSuite with Matchers {
 
   private val timestamp = Instant.ofEpochMilli(1551824013554L)
   private val traceId   = TraceId(timestamp, randomInt = 12345, randomLong = 123456789L)

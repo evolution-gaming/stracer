@@ -4,13 +4,14 @@ import java.time.Instant
 
 import cats.implicits._
 import com.evolutiongaming.stracer.TracingHelper._
-import org.scalatest.{FunSuite, Matchers}
 import zipkin2.{Endpoint => EndpointJ, Span => SpanJ}
 import cats.implicits._
 
 import scala.concurrent.duration._
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class SpanRecordSpec extends FunSuite with Matchers {
+class SpanRecordSpec extends AnyFunSuite with Matchers {
 
   test("toJava") {
 

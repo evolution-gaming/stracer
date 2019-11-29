@@ -3,12 +3,13 @@ package com.evolutiongaming.stracer
 import java.time.Instant
 import cats.implicits._
 import com.evolutiongaming.stracer.TraceJson._
-import org.scalatest.{FunSuite, Matchers}
 import io.circe.parser._
 import scala.io.Source
 import io.circe.syntax._
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class TraceJsonSpec extends FunSuite with Matchers {
+class TraceJsonSpec extends AnyFunSuite with Matchers {
 
   test("toJson & fromJson") {
 

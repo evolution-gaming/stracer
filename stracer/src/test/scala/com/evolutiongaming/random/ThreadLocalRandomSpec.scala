@@ -4,7 +4,8 @@ import cats.effect.{Clock, IO, Sync}
 import cats.implicits._
 import com.evolutiongaming.catshelper.ThreadLocalOf
 import com.evolutiongaming.stracer.IOSuite._
-import org.scalatest.{AsyncFunSuite, Matchers}
+import org.scalatest.funsuite.AsyncFunSuite
+import org.scalatest.matchers.should.Matchers
 
 class ThreadLocalRandomSpec extends AsyncFunSuite with Matchers {
 
