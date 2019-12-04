@@ -8,10 +8,9 @@ lazy val modules: List[ProjectReference] = List(
 
 lazy val root = project
   .in(file("."))
-  .settings(
-    name := "kafka-journal",
-    skip in publish := true)
+  .settings(name := "kafka-journal")
   .settings(commonSettings)
+  .settings(skip in publish := true)
   .aggregate(modules: _*)
 
 lazy val `stracer` = project
