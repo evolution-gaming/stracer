@@ -8,7 +8,7 @@ lazy val modules: List[ProjectReference] = List(
 
 lazy val root = project
   .in(file("."))
-  .settings(name := "kafka-journal")
+  .settings(name := "stracer")
   .settings(commonSettings)
   .settings(skip in publish := true)
   .aggregate(modules: _*)
@@ -46,7 +46,6 @@ lazy val `stracer-circe` = project
     libraryDependencies ++= Circe.all ++ Seq(scalatest % Test))
 
 val commonSettings = Seq(
-  name := "stracer",
   description := "Library for distributed tracing in Scala",
   organization := "com.evolutiongaming",
   homepage := Some(new URL("http://github.com/evolution-gaming/stracer")),
