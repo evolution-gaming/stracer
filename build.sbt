@@ -8,11 +8,14 @@ lazy val modules: List[ProjectReference] = List(
 
 lazy val root = project
   .in(file("."))
-  .settings(skip in publish := true)
-  .settings(thisBuildSettings)
+  .settings(
+    name := "kafka-journal",
+    skip in publish := true)
+  .settings(commonSettings)
   .aggregate(modules: _*)
 
 lazy val `stracer` = project
+  .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
       skafka,
@@ -31,6 +34,7 @@ lazy val `stracer` = project
 
 lazy val `stracer-play-json` = project
   .dependsOn(`stracer`)
+  .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
       PlayJsonTools.tools,
@@ -38,23 +42,21 @@ lazy val `stracer-play-json` = project
 
 lazy val `stracer-circe` = project
   .dependsOn(`stracer`)
+  .settings(commonSettings)
   .settings(
     libraryDependencies ++= Circe.all ++ Seq(scalatest % Test))
 
-val thisBuildSettings = inThisBuild(
-  Seq(
-    name := "stracer",
-    description := "Library for distributed tracing in Scala",
-    organization := "com.evolutiongaming",
-    homepage := Some(new URL("http://github.com/evolution-gaming/stracer")),
-    startYear := Some(2019),
-    organizationName := "Evolution Gaming",
-    organizationHomepage := Some(url("http://evolutiongaming.com")),
-    bintrayOrganization := Some("evolutiongaming"),
-    scalaVersion := crossScalaVersions.value.head,
-    crossScalaVersions := Seq("2.13.1", "2.12.10"),
-    releaseCrossBuild := true,
-    licenses := Seq(("MIT", url("https://opensource.org/licenses/MIT"))),
-    resolvers += Resolver.bintrayRepo("evolutiongaming", "maven")
-  )
-)
+val commonSettings = Seq(
+  name := "stracer",
+  description := "Library for distributed tracing in Scala",
+  organization := "com.evolutiongaming",
+  homepage := Some(new URL("http://github.com/evolution-gaming/stracer")),
+  startYear := Some(2019),
+  organizationName := "Evolution Gaming",
+  organizationHomepage := Some(url("http://evolutiongaming.com")),
+  bintrayOrganization := Some("evolutiongaming"),
+  scalaVersion := crossScalaVersions.value.head,
+  crossScalaVersions := Seq("2.13.1", "2.12.10"),
+  releaseCrossBuild := true,
+  licenses := Seq(("MIT", url("https://opensource.org/licenses/MIT"))),
+  resolvers += Resolver.bintrayRepo("evolutiongaming", "maven"))
