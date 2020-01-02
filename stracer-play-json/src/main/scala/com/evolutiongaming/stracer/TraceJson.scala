@@ -1,7 +1,7 @@
 package com.evolutiongaming.stracer
 
 import com.evolutiongaming.stracer.hex.{FromHex, ToHex}
-import com.evolutiongaming.util.JsonFormats.ObjectFormat
+import com.evolutiongaming.playjsontools.PlayJsonHelper._
 import play.api.libs.json._
 
 object TraceJson {
