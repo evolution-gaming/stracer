@@ -3,8 +3,8 @@ import sbt._
 object Dependencies {
 
   val scalatest     = "org.scalatest"       %% "scalatest"    % "3.1.1"
-  val zipkin        = "io.zipkin.zipkin2"   % "zipkin"        % "2.19.3"
-  val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "1.7.0"
+  val zipkin        = "io.zipkin.zipkin2"   % "zipkin"        % "2.21.0"
+  val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "1.5.2"
   val random        = "com.evolutiongaming" %% "random"       % "0.0.6"
   val configTools   = "com.evolutiongaming" %% "config-tools" % "1.0.4"
   val skafka        = "com.evolutiongaming" %% "skafka"       % "9.0.2"
