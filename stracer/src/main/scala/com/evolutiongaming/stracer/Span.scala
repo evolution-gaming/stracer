@@ -13,5 +13,6 @@ final case class Span(
   duration: Option[FiniteDuration] = None,
   remoteEndpoint: Option[Endpoint] = None,
   tags: Tags = List.empty,
-  shared: Option[Boolean] = None
+  shared: Option[Boolean] = None,
+  parentId: Option[SpanId] = None
 )
