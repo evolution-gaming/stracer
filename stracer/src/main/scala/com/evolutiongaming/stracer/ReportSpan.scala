@@ -33,7 +33,7 @@ object ReportSpan {
       val record = SpanRecord(
         traceId = span.traceId,
         spanId = span.spanId,
-        parentId = None,
+        parentId = span.parentId,
         kind = span.kind orElse kind.some,
         name = span.name.some,
         timestamp = span.timestamp.some,
