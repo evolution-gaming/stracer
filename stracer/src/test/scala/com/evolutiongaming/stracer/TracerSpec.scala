@@ -3,7 +3,7 @@ package com.evolutiongaming.stracer
 import cats.Monad
 import cats.effect._
 import cats.implicits._
-import com.evolutiongaming.random.{Random, ThreadLocalRandom}
+import com.evolutiongaming.random.ThreadLocalRandom
 import com.evolutiongaming.stracer.IOSuite._
 import org.scalatest.funsuite.AsyncFunSuite
 import org.scalatest.matchers.should.Matchers
@@ -16,6 +16,7 @@ class TracerSpec extends AsyncFunSuite with Matchers {
   } yield {
 
     implicit val random1 = random
+    implicit val traceGen = TraceGen[IO]()
 
     test("return random traces") {
       randomTraces[IO].run()
@@ -28,7 +29,7 @@ class TracerSpec extends AsyncFunSuite with Matchers {
 
   tests.unsafeRunSync()
 
-  private def randomTraces[F[_]: Monad: Clock: Random] = {
+  private def randomTraces[F[_]: Monad: TraceGen] = {
     val tracer = Tracer(RuntimeConf.default.pure[F])
     for {
       trace1 <- tracer.trace()
@@ -47,7 +48,7 @@ class TracerSpec extends AsyncFunSuite with Matchers {
     }
   }
 
-  private def returnNone[F[_]: Monad: Clock: Random] = {
+  private def returnNone[F[_]: Monad: TraceGen] = {
     val tracer = Tracer(RuntimeConf(enabled = false).pure[F])
     for {
       trace  <- tracer.trace()

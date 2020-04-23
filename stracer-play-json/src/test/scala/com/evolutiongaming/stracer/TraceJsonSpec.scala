@@ -21,6 +21,7 @@ class TraceJsonSpec extends AnyFunSuite with Matchers {
     val trace = Trace(
       traceId = traceId,
       spanId = spanId,
+      parentId = none,
       timestamp = timestamp.some,
       sampling = Sampling.Accept.some
     )
