@@ -19,7 +19,8 @@ final case class Span(
   duration: Option[FiniteDuration] = None,
   remoteEndpoint: Option[Endpoint] = None,
   tags: Tags = List.empty,
-  shared: Option[Boolean] = None)
+  shared: Option[Boolean] = None,
+  parentId: Option[SpanId])
 ```
 
 ## Trace
@@ -28,6 +29,7 @@ final case class Span(
 final case class Trace(
   traceId: TraceId,
   spanId: SpanId,
+  parentId: Option[SpanId],
   timestamp: Option[Instant],
   sampling: Option[Sampling] = None)
 ``` 
@@ -38,8 +40,6 @@ Generate SpanId and Trace
 
 ```scala
 trait Tracer[F[_]] {
-
-  def spanId: F[Option[SpanId]]
 
   def trace(sampling: Option[Sampling] = None): F[Option[Trace]]
 }
