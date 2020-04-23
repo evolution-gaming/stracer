@@ -1,10 +1,7 @@
 package com.evolutiongaming.stracer
 
 import cats.{Applicative, Monad}
-import cats.effect.Clock
 import cats.implicits._
-import com.evolutiongaming.catshelper.ClockHelper._
-import com.evolutiongaming.random.Random
 import com.evolutiongaming.stracer.util.FromConfigReaderResult
 import com.evolutiongaming.stracer.util.PureConfigHelper._
 import com.typesafe.config.Config
@@ -13,8 +10,6 @@ import pureconfig.generic.semiauto.deriveReader
 
 trait Tracer[F[_]] {
 
-  def spanId: F[Option[SpanId]]
-
   def trace(sampling: Option[Sampling] = None): F[Option[Trace]]
 }
 
@@ -22,21 +17,18 @@ object Tracer {
 
   def apply[F[_]](implicit F: Tracer[F]): Tracer[F] = F
 
-  def empty[F[_]: Applicative]: Tracer[F] = const(none[Trace].pure[F], none[SpanId].pure[F])
+  def empty[F[_]: Applicative]: Tracer[F] = const(none[Trace].pure[F])
 
-  def const[F[_]](trace: F[Option[Trace]], spanId: F[Option[SpanId]]): Tracer[F] = {
-    val spanId1 = spanId
+  def const[F[_]](trace: F[Option[Trace]]): Tracer[F] = {
     val trace1  = trace
     new Tracer[F] {
 
-      def spanId = spanId1
-
-      def trace(sampling: Option[Sampling]) = trace1
+      def trace(sampling: Option[Sampling]): F[Option[Trace]] = trace1
     }
   }
 
 
-  def of[F[_]: Monad: Clock: Random: FromConfigReaderResult](
+  def of[F[_]: Monad: FromConfigReaderResult: TraceGen](
     runtimeConf: F[RuntimeConf],
     config: Config
   ): F[Tracer[F]] = {
@@ -50,7 +42,7 @@ object Tracer {
   }
 
 
-  def of[F[_]: Monad: Clock: Random](
+  def of[F[_]: Monad: TraceGen](
     startupConf: StartupConf,
     runtimeConf: F[RuntimeConf]
   ): F[Tracer[F]] = {
@@ -60,42 +52,16 @@ object Tracer {
   }
 
 
-  def apply[F[_]: Monad: Clock: Random](conf: F[RuntimeConf]): Tracer[F] = {
+  def apply[F[_]: Monad: TraceGen](conf: F[RuntimeConf]): Tracer[F] = {
     new Tracer[F] {
 
-      val spanId = {
-
-        def spanId = for {
-          long <- Random[F].long
-        } yield {
-          SpanId(long).some
-        }
-
+      def trace(sampling: Option[Sampling]): F[Option[Trace]] =
         for {
           conf    <- conf
           enabled  = conf.enabled
-          spanId  <- if (!enabled) none[SpanId].pure[F] else spanId
-        } yield spanId
-      }
-
-      def trace(sampling: Option[Sampling]) = {
-
-        def trace = for {
-          timestamp <- Clock[F].instant
-          long      <- Random[F].long
-          int       <- Random[F].int
-        } yield {
-          val spanId  = SpanId(long)
-          val traceId = TraceId(timestamp, int, long)
-          Trace(traceId, spanId, timestamp.some, sampling).some
-        }
-
-        for {
-          conf    <- conf
-          enabled  = conf.enabled
-          trace   <- if (!enabled) none[Trace].pure[F] else trace
+          trace   <- if (enabled) TraceGen.summon[F].root.map(_.some) else none[Trace].pure[F]
         } yield trace
-      }
+
     }
   }
 

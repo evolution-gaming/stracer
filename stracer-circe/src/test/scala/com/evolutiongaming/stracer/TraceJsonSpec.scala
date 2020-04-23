@@ -14,22 +14,29 @@ import org.scalatest.matchers.should.Matchers
 
 class TraceJsonSpec extends AnyFunSuite with Matchers {
 
-  test("toJson & fromJson") {
+  val trace: Trace = {
 
-    val resourceStream = getClass.getResourceAsStream("trace.json")
-    val expected       = parse(Source.fromInputStream(resourceStream).mkString).getOrElse(sys.error("No file found."))
     val timestamp      = Instant.ofEpochMilli(1551824013554L)
     val traceId        = TraceId(timestamp, randomInt = 12345, randomLong = 123456789L)
     val spanId         = SpanId(1551818273913L)
-    val trace = Trace(
+
+    Trace(
       traceId = traceId,
       spanId = spanId,
+      parentId = none,
       timestamp = timestamp.some,
       sampling = Sampling.Accept.some
     )
+  }
+
+  test("toJson & fromJson") {
+
+    val resourceStream = getClass.getResourceAsStream("trace.json")
+    val expectedJson   = parse(Source.fromInputStream(resourceStream).mkString).getOrElse(sys.error("No file found."))
 
     val json = trace.asJson
-    json shouldEqual expected
-    Decoder[Trace].decodeJson(expected) shouldEqual Right(trace)
+    json shouldEqual expectedJson
+    Decoder[Trace].decodeJson(expectedJson) shouldEqual Right(trace)
+    Decoder[Trace].decodeJson(expectedJson.dropNullValues) shouldEqual Right(trace)
   }
 }
