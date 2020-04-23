@@ -1,9 +1,10 @@
 package com.evolutiongaming.stracer
 
 import io.circe.Decoder.Result
-import io.circe.{Codec, Decoder, DecodingFailure, Encoder, HCursor, Json}
+import io.circe.{Codec, DecodingFailure, HCursor, Json}
 import io.circe.generic.semiauto._
 import cats.syntax.either._
+import com.evolutiongaming.stracer.hex.{FromHex, ToHex}
 
 object TraceJson {
 
@@ -22,19 +23,20 @@ object TraceJson {
       } yield sampling
   }
 
-  implicit val traceIdEncoder: Encoder[TraceId] = Encoder.encodeString.contramap(_.hex)
-  implicit val traceIdDecoder: Decoder[TraceId] = new Decoder[TraceId] {
-    override def apply(c: HCursor): Result[TraceId] =
+  def hexCodec[A](implicit toHex: ToHex[A], fromHex: FromHex[A]): Codec[A] = new Codec[A] {
+    override def apply(a:  A): Json = Json.fromString(toHex(a))
+    override def apply(c: HCursor): Result[A] =
       for {
-        hex <- c.as[String]
-        traceId <- TraceId
-          .fromHex(hex)
-          .leftMap(error => DecodingFailure(s"Value $hex is not a proper hex. Got error $error while decoding.", List.empty))
-      } yield traceId
+        hex   <- c.as[String]
+        value <- fromHex(hex).leftMap(
+          error => DecodingFailure(s"Value $hex is not a proper hex. Got error $error while decoding.", List.empty)
+        )
+      } yield value
   }
 
-  implicit val spanIdEncoder: Encoder[SpanId] = Encoder.encodeString.contramap(_.hex)
-  implicit val spanIdDecoder: Decoder[SpanId] = Decoder.decodeLong.map(SpanId.apply)
+  implicit val traceIdCodec: Codec[TraceId] = hexCodec[TraceId]
+
+  implicit val spanIdCodec: Codec[SpanId] = hexCodec[SpanId]
 
   implicit val traceCodec: Codec[Trace] = deriveCodec[Trace]
 
