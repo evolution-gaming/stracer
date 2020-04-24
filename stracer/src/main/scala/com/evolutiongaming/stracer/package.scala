@@ -4,5 +4,7 @@ package object stracer {
 
   type Tags = List[Tag]
 
-  type TraceOf[A] = A => Option[Trace]
+  type TraceOf[A] = A => TraceCtx
+
+  type TraceCtx = Option[Trace]
 }

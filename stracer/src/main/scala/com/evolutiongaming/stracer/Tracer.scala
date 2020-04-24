@@ -10,7 +10,9 @@ import pureconfig.generic.semiauto.deriveReader
 
 trait Tracer[F[_]] {
 
-  def trace(sampling: Option[Sampling] = None): F[Option[Trace]]
+  def trace(sampling: Option[Sampling] = None): F[TraceCtx]
+
+  def childOf(traceCtx: TraceCtx): F[TraceCtx]
 }
 
 object Tracer {
@@ -19,11 +21,13 @@ object Tracer {
 
   def empty[F[_]: Applicative]: Tracer[F] = const(none[Trace].pure[F])
 
-  def const[F[_]](trace: F[Option[Trace]]): Tracer[F] = {
+  def const[F[_]](trace: F[TraceCtx]): Tracer[F] = {
     val trace1  = trace
     new Tracer[F] {
 
-      def trace(sampling: Option[Sampling]): F[Option[Trace]] = trace1
+      def trace(sampling: Option[Sampling]): F[TraceCtx] = trace1
+
+      def childOf(traceCtx: TraceCtx): F[TraceCtx] = trace1
     }
   }
 
@@ -55,12 +59,22 @@ object Tracer {
   def apply[F[_]: Monad: TraceGen](conf: F[RuntimeConf]): Tracer[F] = {
     new Tracer[F] {
 
-      def trace(sampling: Option[Sampling]): F[Option[Trace]] =
+      def trace(sampling: Option[Sampling]): F[TraceCtx] =
+        whenEnabled {
+          TraceGen.summon[F].root.map(_.some)
+        }
+
+      def childOf(traceCtx: TraceCtx): F[TraceCtx] =
+        whenEnabled {
+          traceCtx.traverse(_.child)
+        }
+
+      private def whenEnabled(ctx: => F[TraceCtx]): F[TraceCtx] =
         for {
           conf    <- conf
           enabled  = conf.enabled
-          trace   <- if (enabled) TraceGen.summon[F].root.map(_.some) else none[Trace].pure[F]
-        } yield trace
+          ctx     <- if (enabled) ctx else none[Trace].pure[F]
+        } yield ctx
 
     }
   }
