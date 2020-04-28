@@ -25,6 +25,10 @@ class TracerSpec extends AsyncFunSuite with Matchers {
     test("return none when disabled") {
       returnNone[IO].run()
     }
+
+    test("child traces") {
+      childTraces[IO].run()
+    }
   }
 
   tests.unsafeRunSync()
@@ -44,6 +48,37 @@ class TracerSpec extends AsyncFunSuite with Matchers {
         trace1 should not equal trace2
         trace1.traceId should not equal trace2.traceId
         trace1.spanId should not equal trace2.spanId
+      }
+    }
+  }
+
+  private def childTraces[F[_]: Monad: TraceGen] = {
+    val tracer         = Tracer(RuntimeConf.default.pure[F])
+    val disabledTracer = Tracer(RuntimeConf(enabled = false).pure[F])
+    for {
+      trace1 <- tracer.trace()
+      child1 <- tracer.childOf(trace1)
+      child2 <- tracer.childOf(trace1)
+      child3 <- disabledTracer.childOf(trace1)
+      _      =  trace1 shouldBe a[Some[_]]
+      _      =  child1 shouldBe a[Some[_]]
+      _      =  child1 shouldBe a[Some[_]]
+      _      =  child3 shouldBe None
+    } yield {
+      for {
+        trace1 <- trace1
+        child1 <- child1
+        child2 <- child2
+      } yield {
+        trace1 should not equal child1
+        trace1 should not equal child2
+        trace1.traceId shouldEqual child1.traceId
+        trace1.traceId shouldEqual child2.traceId
+        trace1.spanId should not equal child1.spanId
+        trace1.spanId should not equal child2.spanId
+        trace1.spanId.some shouldEqual child1.parentId
+        trace1.spanId.some shouldEqual child2.parentId
+        child1.spanId should not equal child2.spanId
       }
     }
   }
