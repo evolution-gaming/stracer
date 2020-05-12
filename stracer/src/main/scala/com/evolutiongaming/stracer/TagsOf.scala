@@ -1,5 +1,6 @@
 package com.evolutiongaming.stracer
 
+import cats.Contravariant
 import com.evolutiongaming.stracer.implicits._
 
 trait TagsOf[-A] {
@@ -8,6 +9,15 @@ trait TagsOf[-A] {
 }
 
 object TagsOf {
+
+  def empty[A]: TagsOf[A] = _ => Tags.Empty
+
+  def apply[A](f: A => Tags): TagsOf[A] = a => f(a)
+
+
+  implicit val contravariantTagsOf: Contravariant[TagsOf] = new Contravariant[TagsOf] {
+    def contramap[A, B](fa: TagsOf[A])(f: B => A) = b => fa(f(b))
+  }
 
   implicit val tagsOfTag: TagsOf[Tag] = (a: Tag) => Tags(a)
 
