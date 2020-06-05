@@ -20,7 +20,7 @@ object Dependencies {
 
   object Scodec {
     val core = "org.scodec" %% "scodec-core" % "1.11.6"
-    val bits = "org.scodec" %% "scodec-bits" % "1.1.14"
+    val bits = "org.scodec" %% "scodec-bits" % "1.1.15"
   }
 
   object PlayJsonTools {
