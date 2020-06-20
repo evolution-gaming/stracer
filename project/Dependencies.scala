@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
 
-  val scalatest     = "org.scalatest"       %% "scalatest"    % "3.1.2"
+  val scalatest     = "org.scalatest"       %% "scalatest"    % "3.2.0"
   val zipkin        = "io.zipkin.zipkin2"   % "zipkin"        % "2.21.1"
   val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "1.7.1"
   val random        = "com.evolutiongaming" %% "random"       % "0.0.6"
