@@ -4,7 +4,7 @@ object Dependencies {
 
   val scalatest     = "org.scalatest"       %% "scalatest"    % "3.2.0"
   val zipkin        = "io.zipkin.zipkin2"   % "zipkin"        % "2.21.5"
-  val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "2.0.4"
+  val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "2.0.7"
   val random        = "com.evolutiongaming" %% "random"       % "0.0.7"
   val configTools   = "com.evolutiongaming" %% "config-tools" % "1.0.4"
   val skafka        = "com.evolutiongaming" %% "skafka"       % "10.0.0"
