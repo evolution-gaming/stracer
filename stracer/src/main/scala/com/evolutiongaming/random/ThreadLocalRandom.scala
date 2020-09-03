@@ -2,7 +2,7 @@ package com.evolutiongaming.random
 
 import cats.FlatMap
 import cats.effect.Clock
-import cats.implicits._
+import cats.syntax.all._
 import com.evolutiongaming.catshelper.{ThreadLocalOf, ThreadLocalRef}
 
 object ThreadLocalRandom {

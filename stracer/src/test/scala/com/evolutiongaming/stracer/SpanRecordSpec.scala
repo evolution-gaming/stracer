@@ -2,10 +2,10 @@ package com.evolutiongaming.stracer
 
 import java.time.Instant
 
-import cats.implicits._
+import cats.syntax.all._
 import com.evolutiongaming.stracer.TracingHelper._
 import zipkin2.{Endpoint => EndpointJ, Span => SpanJ}
-import cats.implicits._
+import cats.syntax.all._
 
 import scala.concurrent.duration._
 import org.scalatest.funsuite.AnyFunSuite

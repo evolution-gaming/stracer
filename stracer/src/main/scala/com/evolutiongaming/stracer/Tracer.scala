@@ -1,7 +1,7 @@
 package com.evolutiongaming.stracer
 
 import cats.{Applicative, Monad}
-import cats.implicits._
+import cats.syntax.all._
 import com.evolutiongaming.stracer.util.FromConfigReaderResult
 import com.evolutiongaming.stracer.util.PureConfigHelper._
 import com.typesafe.config.Config

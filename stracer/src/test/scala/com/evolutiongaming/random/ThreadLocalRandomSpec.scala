@@ -1,7 +1,7 @@
 package com.evolutiongaming.random
 
 import cats.effect.{Clock, IO, Sync}
-import cats.implicits._
+import cats.syntax.all._
 import com.evolutiongaming.catshelper.ThreadLocalOf
 import com.evolutiongaming.stracer.IOSuite._
 import org.scalatest.funsuite.AsyncFunSuite

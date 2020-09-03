@@ -2,7 +2,7 @@ package com.evolutiongaming.stracer
 
 import java.time.Instant
 
-import cats.implicits._
+import cats.syntax.all._
 import com.evolutiongaming.stracer.TraceJson._
 import io.circe.Decoder
 import io.circe.parser._
