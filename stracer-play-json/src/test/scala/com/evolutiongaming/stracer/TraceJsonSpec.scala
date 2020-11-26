@@ -1,8 +1,6 @@
 package com.evolutiongaming.stracer
 
 import java.time.Instant
-
-import cats.implicits._
 import com.evolutiongaming.stracer.TraceJson.TraceFormat
 import play.api.libs.json.{JsSuccess, Json}
 import org.scalatest.funsuite.AnyFunSuite

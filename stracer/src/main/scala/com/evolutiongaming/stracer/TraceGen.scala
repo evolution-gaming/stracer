@@ -1,6 +1,6 @@
 package com.evolutiongaming.stracer
 
-import cats.implicits._
+import cats.syntax.all._
 import cats.Monad
 import cats.effect.Clock
 import com.evolutiongaming.random.Random

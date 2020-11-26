@@ -4,7 +4,7 @@ import cats.Applicative
 import cats.data.{NonEmptyList => Nel}
 import cats.effect._
 import cats.effect.implicits._
-import cats.implicits._
+import cats.syntax.all._
 import com.evolutiongaming.catshelper.{FromTry, Log, LogOf, SerialRef}
 import com.evolutiongaming.config.ConfigHelper._
 import com.evolutiongaming.skafka.producer.{Producer, ProducerConfig, ProducerOf, ProducerRecord}

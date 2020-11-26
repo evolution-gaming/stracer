@@ -1,6 +1,6 @@
 package com.evolutiongaming.stracer.hex
 
-import cats.implicits._
+import cats.syntax.all._
 import scodec.bits.ByteVector
 import scodec.{DecodeResult, Decoder, Err, codecs}
 
