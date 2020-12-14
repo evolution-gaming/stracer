@@ -1,5 +1,6 @@
 package com.evolutiongaming.stracer
 
+import cats.syntax.all._
 import java.time.Instant
 import com.evolutiongaming.stracer.implicits._
 

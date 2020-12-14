@@ -10,7 +10,7 @@ object Dependencies {
   val skafka        = "com.evolutiongaming" %% "skafka"       % "11.0.0"
 
   object Cats {
-    private val version = "2.1.1"
+    private val version = "2.3.0"
 
     val core   = "org.typelevel" %% "cats-core"   % version
     val kernel = "org.typelevel" %% "cats-kernel" % version
@@ -24,7 +24,7 @@ object Dependencies {
   }
 
   object PlayJsonTools {
-    private val version = "0.5.1"
+    private val version = "0.9.0"
 
     val tools   = "com.evolutiongaming" %% "play-json-tools"   % version
     val generic = "com.evolutiongaming" %% "play-json-generic" % version

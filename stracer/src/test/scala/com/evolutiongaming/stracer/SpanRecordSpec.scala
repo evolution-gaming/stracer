@@ -1,5 +1,6 @@
 package com.evolutiongaming.stracer
 
+import cats.syntax.all._
 import java.time.Instant
 import com.evolutiongaming.stracer.TracingHelper._
 import zipkin2.{Endpoint => EndpointJ, Span => SpanJ}

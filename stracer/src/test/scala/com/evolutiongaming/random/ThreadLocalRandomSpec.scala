@@ -1,5 +1,6 @@
 package com.evolutiongaming.random
 
+import cats.syntax.all._
 import cats.effect.{Clock, IO, Sync}
 import com.evolutiongaming.catshelper.ThreadLocalOf
 import com.evolutiongaming.stracer.IOSuite._
