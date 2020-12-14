@@ -2,7 +2,6 @@ package com.evolutiongaming.stracer
 
 import cats.Monad
 import cats.effect._
-import cats.implicits._
 import com.evolutiongaming.random.ThreadLocalRandom
 import com.evolutiongaming.stracer.IOSuite._
 import org.scalatest.funsuite.AsyncFunSuite

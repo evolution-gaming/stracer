@@ -1,8 +1,6 @@
 package com.evolutiongaming.stracer
 
 import java.time.Instant
-
-import cats.implicits._
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 

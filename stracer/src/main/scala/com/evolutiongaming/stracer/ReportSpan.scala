@@ -1,7 +1,7 @@
 package com.evolutiongaming.stracer
 
 import cats.Applicative
-import cats.implicits._
+import cats.syntax.all._
 import com.evolutiongaming.stracer.implicits._
 
 trait ReportSpan[F[_]] {

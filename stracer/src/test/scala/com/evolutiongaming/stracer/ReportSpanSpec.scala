@@ -1,8 +1,6 @@
 package com.evolutiongaming.stracer
 
 import java.time.Instant
-
-import cats.implicits._
 import com.evolutiongaming.stracer.implicits._
 
 import scala.concurrent.duration._
