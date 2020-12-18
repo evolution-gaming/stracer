@@ -14,6 +14,8 @@ object TagsOf {
 
   def apply[A](f: A => Tags): TagsOf[A] = a => f(a)
 
+  def summon[A](implicit tagsOf: TagsOf[A]): TagsOf[A] = tagsOf
+
 
   implicit val contravariantTagsOf: Contravariant[TagsOf] = new Contravariant[TagsOf] {
     def contramap[A, B](fa: TagsOf[A])(f: B => A) = b => fa(f(b))
