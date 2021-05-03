@@ -10,7 +10,7 @@ lazy val root = project
   .in(file("."))
   .settings(name := "stracer")
   .settings(commonSettings)
-  .settings(skip in publish := true)
+  .settings(publish / skip := true)
   .aggregate(modules: _*)
 
 lazy val `stracer` = project
@@ -48,10 +48,11 @@ val commonSettings = Seq(
   organization := "com.evolutiongaming",
   homepage := Some(new URL("http://github.com/evolution-gaming/stracer")),
   startYear := Some(2019),
-  organizationName := "Evolution Gaming",
+  organizationName := "Evolution",
   organizationHomepage := Some(url("http://evolution.com")),
   scalaVersion := crossScalaVersions.value.head,
   crossScalaVersions := Seq("2.13.5", "2.12.13"),
   releaseCrossBuild := true,
   licenses := Seq(("MIT", url("https://opensource.org/licenses/MIT"))),
-  publishTo := Some(Resolver.evolutionReleases))
+  publishTo := Some(Resolver.evolutionReleases),
+  scalacOptsFailOnWarn := Some(false))
