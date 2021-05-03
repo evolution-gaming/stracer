@@ -1,8 +1,8 @@
 # STracer
 [![Build Status](https://github.com/evolution-gaming/stracer/workflows/CI/badge.svg)](https://github.com/evolution-gaming/stracer/actions?query=workflow:CI+branch:master)
-[![Coverage Status](https://coveralls.io/repos/evolution-gaming/stracer/badge.svg)](https://coveralls.io/r/evolution-gaming/stracer)
+[![Coverage Status](https://coveralls.io/repos/github/evolution-gaming/stracer/badge.svg?branch=master)](https://coveralls.io/github/evolution-gaming/stracer?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4b3e6d6ca1224b1bb7004b18760f7fa8)](https://www.codacy.com/app/evolution-gaming/stracer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=evolution-gaming/stracer&amp;utm_campaign=Badge_Grade)
-[![version](https://api.bintray.com/packages/evolutiongaming/maven/stracer/images/download.svg)](https://bintray.com/evolutiongaming/maven/stracer/_latestVersion)
+[![Version](https://img.shields.io/badge/version-click-blue)](https://evolution.jfrog.io/artifactory/api/search/latestVersion?g=com.evolutiongaming&a=stracer_2.13&repos=public)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellowgreen.svg)](https://opensource.org/licenses/MIT)
 
 Library for distributed tracing in Scala
@@ -62,9 +62,9 @@ trait ReportSpan[F[_]] {
 ## Setup
 
 ```scala
-resolvers += Resolver.bintrayRepo("evolutiongaming", "maven")
+addSbtPlugin("com.evolution" % "sbt-artifactory-plugin" % "0.0.2")
 
-libraryDependencies += "com.evolutiongaming" %% "stracer"           % "1.0.0"
-libraryDependencies += "com.evolutiongaming" %% "stracer-play-json" % "1.0.0"
-libraryDependencies += "com.evolutiongaming" %% "stracer-circe"     % "1.0.0"
+libraryDependencies += "com.evolutiongaming" %% "stracer"           % "2.0.4"
+libraryDependencies += "com.evolutiongaming" %% "stracer-play-json" % "2.0.4"
+libraryDependencies += "com.evolutiongaming" %% "stracer-circe"     % "2.0.4"
 ```
