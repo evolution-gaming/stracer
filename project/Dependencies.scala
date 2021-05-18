@@ -16,7 +16,7 @@ object Dependencies {
   }
 
   object Scodec {
-    val core = "org.scodec" %% "scodec-core" % "1.11.7"
+    val core = "org.scodec" %% "scodec-core" % "1.11.8"
     val bits = "org.scodec" %% "scodec-bits" % "1.1.18"
   }
 
