@@ -4,14 +4,18 @@ object Dependencies {
 
   val scalatest     = "org.scalatest"       %% "scalatest"    % "3.2.3"
   val zipkin        = "io.zipkin.zipkin2"   % "zipkin"        % "2.21.6"
-  val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "2.1.4"
-  val random        = "com.evolutiongaming" %% "random"       % "0.0.7"
+  val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "2.3.0"
+  val random        = "com.evolutiongaming" %% "random"       % "0.1.0"
   val configTools   = "com.evolutiongaming" %% "config-tools" % "1.0.4"
-  val skafka        = "com.evolutiongaming" %% "skafka"       % "11.0.0"
+  val skafka        = "com.evolutiongaming" %% "skafka"       % "11.2.0"
 
   object Cats {
-    private val version = "2.3.0"
-    val core   = "org.typelevel" %% "cats-core"   % version
+    private val version = "2.6.1"
+    val core = "org.typelevel" %% "cats-core" % version
+  }
+
+  object CatsEffect {
+    private val version = "2.5.1"
     val effect = "org.typelevel" %% "cats-effect" % version
   }
 
@@ -21,7 +25,7 @@ object Dependencies {
   }
 
   object PlayJsonTools {
-    private val version = "0.9.0"
+    private val version = "0.9.1"
 
     val tools   = "com.evolutiongaming" %% "play-json-tools"   % version
     val generic = "com.evolutiongaming" %% "play-json-generic" % version

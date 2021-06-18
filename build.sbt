@@ -24,7 +24,7 @@ lazy val `stracer` = project
       Scodec.bits,
       `cats-helper`,
       Cats.core,
-      Cats.effect,
+      CatsEffect.effect,
       configTools,
       Pureconfig.pureconfig,
       scalatest % Test))
