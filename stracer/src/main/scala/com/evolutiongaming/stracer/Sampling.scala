@@ -7,9 +7,10 @@ sealed abstract class Sampling extends Product
 
 object Sampling {
 
-  val Values: Set[Sampling] = Set(Deny, Accept, Debug)
+  val Values: Set[Sampling] = Set(Deny, Accept, Debug, Probabilistic)
 
-  case object Deny   extends Sampling
-  case object Accept extends Sampling
-  case object Debug  extends Sampling
+  case object Deny          extends Sampling
+  case object Accept        extends Sampling
+  case object Debug         extends Sampling
+  case object Probabilistic extends Sampling
 }
