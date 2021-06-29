@@ -96,22 +96,19 @@ object Tracer {
     implicit val configReaderStartupConf: ConfigReader[StartupConf] = deriveReader
   }
 
+  def defaultProbability: Option[Sampling] => Double = {
+    case Some(Accept) | Some(Debug) => 1.0
+    case _ => 0.01
+  }
 
-  final case class RuntimeConf(enabled: Boolean = true, probability: Option[Sampling] => Double = RuntimeConf.defaultProbability)
+  val alwaysProbability: Option[Sampling] => Double = _ => 1.0
+
+  val neverProbability: Option[Sampling] => Double = _ => -1.0
+
+  final case class RuntimeConf(enabled: Boolean = true, probability: Option[Sampling] => Double = defaultProbability)
 
   object RuntimeConf {
     val default: RuntimeConf = RuntimeConf()
-
-    private val always: Double = 1.0
-    private val onePercent: Double = 0.01
-
-    val defaultProbability: Option[Sampling] => Double = {
-      case Some(Accept) | Some(Debug) => always
-      case _ => onePercent
-    }
-
-    val alwaysProbability: Option[Sampling] => Double = _ => 1.0
-
-    val neverProbability: Option[Sampling] => Double = _ => -1.0
   }
+
 }
