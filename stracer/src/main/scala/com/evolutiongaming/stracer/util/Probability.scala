@@ -9,25 +9,24 @@ trait Probability {
 
 object Probability {
 
-  val defaultProbabilityValue = 0.01
-  val alwaysProbabilityValue = 1.0
-  val neverProbabilityValue = -1.0
+  private val defaultProbabilityValue = 0.01
+  private val alwaysProbabilityValue = 1.0
+  private val neverProbabilityValue = -1.0
 
-
-  val default = new Probability {
-    override def apply(sampling: Option[Sampling]): Double = sampling match {
-      case Some(Accept) => alwaysProbabilityValue
-      case Some(Debug) => alwaysProbabilityValue
-      case Some(Deny) => defaultProbabilityValue
-      case None => defaultProbabilityValue
-    }
+  val default: Probability = {
+    case Some(Accept) => alwaysProbabilityValue
+    case Some(Debug) => alwaysProbabilityValue
+    case Some(Deny) => defaultProbabilityValue
+    case None => defaultProbabilityValue
   }
 
-  val always = new ConstProbability(alwaysProbabilityValue)
+  val always: Probability = new ConstProbability(alwaysProbabilityValue)
 
-  val never = new ConstProbability(neverProbabilityValue)
+  val never: Probability = new ConstProbability(neverProbabilityValue)
 
-  class ConstProbability(value: Double) extends Probability {
+  def const(value: Double): Probability = new ConstProbability(value)
+
+  private class ConstProbability(value: Double) extends Probability {
     override def apply(sampling: Option[Sampling]): Double = value
   }
 }
