@@ -1,14 +1,13 @@
 package com.evolutiongaming.stracer
 
-import cats.{Applicative, Monad}
 import cats.syntax.all._
+import cats.{Applicative, Monad}
 import com.evolutiongaming.random.Random
-import com.evolutiongaming.stracer.Sampling.{Accept, Debug}
-import com.evolutiongaming.stracer.util.FromConfigReaderResult
 import com.evolutiongaming.stracer.util.PureConfigHelper._
+import com.evolutiongaming.stracer.util.{FromConfigReaderResult, Probability}
 import com.typesafe.config.Config
-import pureconfig.{ConfigReader, ConfigSource}
 import pureconfig.generic.semiauto.deriveReader
+import pureconfig.{ConfigReader, ConfigSource}
 
 trait Tracer[F[_]] {
 
@@ -96,16 +95,7 @@ object Tracer {
     implicit val configReaderStartupConf: ConfigReader[StartupConf] = deriveReader
   }
 
-  def defaultProbability: Option[Sampling] => Double = {
-    case Some(Accept) | Some(Debug) => 1.0
-    case _ => 0.01
-  }
-
-  val alwaysProbability: Option[Sampling] => Double = _ => 1.0
-
-  val neverProbability: Option[Sampling] => Double = _ => -1.0
-
-  final case class RuntimeConf(enabled: Boolean = true, probability: Option[Sampling] => Double = defaultProbability)
+  final case class RuntimeConf(enabled: Boolean = true, probability: Probability = Probability.default)
 
   object RuntimeConf {
     val default: RuntimeConf = RuntimeConf()

@@ -8,6 +8,7 @@ import com.evolutiongaming.stracer.IOSuite._
 import org.scalatest.funsuite.AsyncFunSuite
 import org.scalatest.matchers.should.Matchers
 import com.evolutiongaming.stracer.Tracer.RuntimeConf
+import com.evolutiongaming.stracer.util.Probability
 
 class TracerSpec extends AsyncFunSuite with Matchers {
 
@@ -39,7 +40,7 @@ class TracerSpec extends AsyncFunSuite with Matchers {
   tests.unsafeRunSync()
 
   private def shouldApplyProbability[F[_]: Monad: TraceGen: Random] = {
-    val tracer = Tracer(RuntimeConf(probability = Tracer.neverProbability).pure[F])
+    val tracer = Tracer(RuntimeConf(probability = Probability.never).pure[F])
     for {
       trace1 <- tracer.trace()
       trace2 <- tracer.trace()
@@ -50,7 +51,7 @@ class TracerSpec extends AsyncFunSuite with Matchers {
   }
 
   private def randomTraces[F[_]: Monad: TraceGen: Random] = {
-    val tracer = Tracer(RuntimeConf(probability = Tracer.alwaysProbability).pure[F])
+    val tracer = Tracer(RuntimeConf(probability = Probability.always).pure[F])
     for {
       trace1 <- tracer.trace()
       _      =  trace1 shouldBe a[Some[_]]
@@ -69,7 +70,7 @@ class TracerSpec extends AsyncFunSuite with Matchers {
   }
 
   private def childTraces[F[_]: Monad: TraceGen: Random] = {
-    val tracer         = Tracer(RuntimeConf(probability = Tracer.alwaysProbability).pure[F])
+    val tracer         = Tracer(RuntimeConf(probability = Probability.always).pure[F])
     val disabledTracer = Tracer(RuntimeConf(enabled = false).pure[F])
     for {
       trace1 <- tracer.trace()
