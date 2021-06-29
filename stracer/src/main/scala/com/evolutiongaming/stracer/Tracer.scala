@@ -2,6 +2,8 @@ package com.evolutiongaming.stracer
 
 import cats.{Applicative, Monad}
 import cats.syntax.all._
+import com.evolutiongaming.random.Random
+import com.evolutiongaming.stracer.Sampling.{Accept, Debug}
 import com.evolutiongaming.stracer.util.FromConfigReaderResult
 import com.evolutiongaming.stracer.util.PureConfigHelper._
 import com.typesafe.config.Config
@@ -10,9 +12,9 @@ import pureconfig.generic.semiauto.deriveReader
 
 trait Tracer[F[_]] {
 
-  def trace(sampling: Option[Sampling] = None): F[TraceCtx]
+  def trace(sampling: Option[Sampling] = None): F[Option[Trace]]
 
-  def childOf(traceCtx: TraceCtx): F[TraceCtx]
+  def childOf(traceCtx: Option[Trace]): F[Option[Trace]]
 }
 
 object Tracer {
@@ -21,18 +23,18 @@ object Tracer {
 
   def empty[F[_]: Applicative]: Tracer[F] = const(none[Trace].pure[F])
 
-  def const[F[_]](trace: F[TraceCtx]): Tracer[F] = {
+  def const[F[_]](trace: F[Option[Trace]]): Tracer[F] = {
     val trace1  = trace
     new Tracer[F] {
 
-      def trace(sampling: Option[Sampling]): F[TraceCtx] = trace1
+      def trace(sampling: Option[Sampling]): F[Option[Trace]] = trace1
 
-      def childOf(traceCtx: TraceCtx): F[TraceCtx] = trace1
+      def childOf(traceCtx: Option[Trace]): F[Option[Trace]] = trace1
     }
   }
 
 
-  def of[F[_]: Monad: FromConfigReaderResult: TraceGen](
+  def of[F[_]: Monad: FromConfigReaderResult: TraceGen: Random](
     runtimeConf: F[RuntimeConf],
     config: Config
   ): F[Tracer[F]] = {
@@ -46,7 +48,7 @@ object Tracer {
   }
 
 
-  def of[F[_]: Monad: TraceGen](
+  def of[F[_]: Monad: TraceGen: Random](
     startupConf: StartupConf,
     runtimeConf: F[RuntimeConf]
   ): F[Tracer[F]] = {
@@ -56,26 +58,31 @@ object Tracer {
   }
 
 
-  def apply[F[_]: Monad: TraceGen](conf: F[RuntimeConf]): Tracer[F] = {
+  def apply[F[_]: Monad: TraceGen: Random](conf: F[RuntimeConf]): Tracer[F] = {
     new Tracer[F] {
 
-      def trace(sampling: Option[Sampling]): F[TraceCtx] =
+      def trace(sampling: Option[Sampling]): F[Option[Trace]] =
         whenEnabled {
-          TraceGen.summon[F].root.map(_.some)
+          Monad[F].ifM(shouldTrace(sampling))(TraceGen.summon[F].root.map(_.some), none[Trace].pure[F])
         }
 
-      def childOf(traceCtx: TraceCtx): F[TraceCtx] =
+      def childOf(traceCtx: Option[Trace]): F[Option[Trace]] =
         whenEnabled {
           traceCtx.traverse(_.child)
         }
 
-      private def whenEnabled(ctx: => F[TraceCtx]): F[TraceCtx] =
+      private def whenEnabled(ctx: => F[Option[Trace]]): F[Option[Trace]] =
         for {
           conf    <- conf
           enabled  = conf.enabled
           ctx     <- if (enabled) ctx else none[Trace].pure[F]
         } yield ctx
 
+      private def shouldTrace(sampling: Option[Sampling]): F[Boolean] = for {
+        probabilityConfig <- conf.map(_.probability)
+        probability = probabilityConfig(sampling)
+        randomValue <- Random[F].double
+      } yield probability > randomValue
     }
   }
 
@@ -90,9 +97,21 @@ object Tracer {
   }
 
 
-  final case class RuntimeConf(enabled: Boolean = true)
+  final case class RuntimeConf(enabled: Boolean = true, probability: Option[Sampling] => Double = RuntimeConf.defaultProbability)
 
   object RuntimeConf {
     val default: RuntimeConf = RuntimeConf()
+
+    private val always: Double = 1.0
+    private val onePercent: Double = 0.01
+
+    val defaultProbability: Option[Sampling] => Double = {
+      case Some(Accept) | Some(Debug) => always
+      case _ => onePercent
+    }
+
+    val alwaysProbability: Option[Sampling] => Double = _ => 1.0
+
+    val neverProbability: Option[Sampling] => Double = _ => -1.0
   }
 }
