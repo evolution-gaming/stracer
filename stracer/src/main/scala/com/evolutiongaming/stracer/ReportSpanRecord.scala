@@ -3,7 +3,7 @@ package com.evolutiongaming.stracer
 import cats.Applicative
 import cats.data.{NonEmptyList => Nel}
 import cats.effect._
-import cats.effect.implicits._
+import cats.effect.syntax.all._
 import cats.syntax.all._
 import com.evolutiongaming.catshelper.{FromTry, Log, LogOf, SerialRef}
 import com.evolutiongaming.config.ConfigHelper._
@@ -27,7 +27,7 @@ object ReportSpanRecord {
     def apply(span: SpanRecord) = value
   }
 
-  def of[F[_]: Concurrent: ContextShift: Timer: LogOf: FromTry](
+  def of[F[_]: Concurrent: Timer: LogOf: FromTry](
     config: Config,
     enabled: F[Boolean],
     producerOf: ProducerOf[F]
@@ -45,7 +45,7 @@ object ReportSpanRecord {
     reportSpan getOrElse Resource.pure[F, ReportSpanRecord[F]](empty[F])
   }
 
-  def of[F[_]: Concurrent: Timer: ContextShift: Clock: LogOf: FromTry](
+  def of[F[_]: Concurrent: Timer: LogOf: FromTry](
     topic: Topic,
     producerConfig: ProducerConfig,
     enabled: F[Boolean],
@@ -137,7 +137,9 @@ object ReportSpanRecord {
         case State.Running(None)               => State.stopped.pure[F]
         case State.Stopped                     => State.stopped.pure[F]
       }
-      fiber <- Concurrent[F].start { Sync[F].guarantee(background(stateRef, log))(release) }
+      fiber <- background(stateRef, log)
+        .guarantee(release)
+        .start
     } yield {
       val release1 = {
         val release1 = for {
@@ -173,18 +175,20 @@ object ReportSpanRecord {
 
       def send(producer: Producer[F]) = {
         val record = ProducerRecord[String, Nel[SpanRecord]](topic = topic, key = span.traceId.hex, value = Nel.of(span))
-
-        val send = producer.send(record).void.handleErrorWith { error =>
-          log.error(s"Producer.send $span failed: $error, $error")
-        }
-
-        Concurrent[F].start { send }
+        producer
+          .send(record)
+          .void
+          .handleErrorWith { error =>
+            log.error(s"Producer.send $span failed: $error, $error")
+          }
+          .start
+          .void
       }
 
       for {
         producer <- producer
-        _        <- producer.foldMapM(send)
-      } yield {}
+        result   <- producer.foldMapM(send)
+      } yield result
     }
   }
 }
