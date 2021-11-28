@@ -1,5 +1,7 @@
 import Dependencies._
 
+ThisBuild / versionScheme := Some("semver-spec")
+
 lazy val modules: List[ProjectReference] = List(
   `stracer`,
   `stracer-play-json`,
