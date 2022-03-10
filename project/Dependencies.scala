@@ -25,10 +25,9 @@ object Dependencies {
   }
 
   object PlayJsonTools {
-    private val version = "0.9.3"
+    private val version = "0.10.0"
 
     val tools   = "com.evolutiongaming" %% "play-json-tools"   % version
-    val generic = "com.evolutiongaming" %% "play-json-generic" % version
   }
 
   object Circe {
