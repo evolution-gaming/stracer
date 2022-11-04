@@ -27,7 +27,7 @@ object ReportSpanRecord {
     def apply(span: SpanRecord) = value
   }
 
-  def of[F[_]: Concurrent: Timer: LogOf: FromTry](
+  def of[F[_]: Async: LogOf: FromTry](
     config: Config,
     enabled: F[Boolean],
     producerOf: ProducerOf[F]
@@ -45,7 +45,7 @@ object ReportSpanRecord {
     reportSpan getOrElse Resource.pure[F, ReportSpanRecord[F]](empty[F])
   }
 
-  def of[F[_]: Concurrent: Timer: LogOf: FromTry](
+  def of[F[_]: Async: LogOf: FromTry](
     topic: Topic,
     producerConfig: ProducerConfig,
     enabled: F[Boolean],
@@ -120,8 +120,8 @@ object ReportSpanRecord {
             case _: State.Running =>
               for {
                 enabled <- enabled
-                _       <- Sync[F].uncancelable { update(stateRef, enabled, log) }
-                _       <- Timer[F].sleep(10.seconds)
+                _       <- Sync[F].uncancelable { _ => update(stateRef, enabled, log) }
+                _       <- Temporal[F].sleep(10.seconds)
               } yield {
                 ().asLeft[Unit]
               }
