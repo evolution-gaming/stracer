@@ -32,9 +32,6 @@ object TraceJson {
 
   implicit class EitherOps[A](val self: Either[String, A]) extends AnyVal {
 
-    def jsResult: JsResult[A] = self match {
-      case Right(a) => JsSuccess(a)
-      case Left(a)  => JsError(a)
-    }
+    def jsResult: JsResult[A] = self.fold(JsError(_), JsSuccess(_))
   }
 }
