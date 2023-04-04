@@ -14,7 +14,7 @@ object ThreadLocalRandom {
       .map(apply)
   }
 
-  def of1[F[_]: Sync: Clock: ThreadLocalOf]: F[Random[F]] =
+  def of1[F[_]: Sync: ThreadLocalOf]: F[Random[F]] =
     for {
       randomOf <- RandomStateOf.of[F]
       randomInstance <- randomOf()
