@@ -1,7 +1,7 @@
 package com.evolutiongaming.random
 
 import cats.syntax.all._
-import cats.effect.{IO, Sync}
+import cats.effect.{Clock, IO, Sync}
 import com.evolutiongaming.catshelper.ThreadLocalOf
 import com.evolutiongaming.stracer.IOSuite._
 import org.scalatest.funsuite.AsyncFunSuite
@@ -13,7 +13,7 @@ class ThreadLocalRandomSpec extends AsyncFunSuite with Matchers {
     randomTraces[IO].run()
   }
 
-  private def randomTraces[F[_]: Sync: ThreadLocalOf]: F[Unit] =
+  private def randomTraces[F[_]: Sync: Clock: ThreadLocalOf]: F[Unit] =
     for {
       random <- ThreadLocalRandom.of[F]
       n1     <- random.int
