@@ -10,7 +10,8 @@ object ThreadLocalRandom {
   def of[F[_]: FlatMap: Clock: ThreadLocalOf]: F[Random[F]] = {
     val random = Random.State.fromClock[F]()
 
-    ThreadLocalOf[F].apply(random)
+    ThreadLocalOf[F]
+      .apply(random)
       .map(apply)
   }
 
