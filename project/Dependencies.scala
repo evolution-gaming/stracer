@@ -2,12 +2,12 @@ import sbt._
 
 object Dependencies {
 
-  val scalatest     = "org.scalatest"       %% "scalatest"    % "3.2.10"
+  val scalatest     = "org.scalatest"       %% "scalatest"    % "3.2.15"
   val zipkin        = "io.zipkin.zipkin2"   % "zipkin"        % "2.21.6"
   val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "3.1.1"
   val random        = "com.evolutiongaming" %% "random"       % "1.0.0"
   val configTools   = "com.evolutiongaming" %% "config-tools" % "1.0.4"
-  val skafka        = "com.evolutiongaming" %% "skafka"       % "14.1.2"
+  val skafka        = "com.evolutiongaming" %% "skafka"       % "15.0.1"
 
 
   object Cats {
@@ -44,7 +44,7 @@ object Dependencies {
   }
 
   object Pureconfig {
-    private val version = "0.12.3"
+    private val version = "0.17.3"
     val pureconfig = "com.github.pureconfig" %% "pureconfig"      % version
     val cats       = "com.github.pureconfig" %% "pureconfig-cats" % version
   }

@@ -13,9 +13,7 @@ object FromHex {
 
   implicit val LongFromHex: FromHex[Long] = FromHex.fromDecoder(codecs.int64)
 
-  implicit val HexToHex: FromHex[Hex] = new FromHex[Hex] {
-    def apply(a: Hex) = a.asRight
-  }
+  implicit val HexToHex: FromHex[Hex] = _.asRight
 
   def apply[A](implicit F: FromHex[A]): FromHex[A] = F
 
