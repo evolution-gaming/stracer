@@ -49,7 +49,8 @@ trait Tracer[F[_]] {
 ## ReportSpan
 
 We provide [Kafka](http://kafka.apache.org) based implementation, which uses `SpanBytesEncoder.THRIFT` from [Zipkin](http://zipkin.io/) to encode spans.
-It is also compatible with [Jaeger](https://www.jaegertracing.io) & [Ingester](https://www.jaegertracing.io/docs/1.8/deployment/#ingester) 
+It is also compatible with [Jaeger](https://www.jaegertracing.io) & [Ingester](https://www.jaegertracing.io/docs/1.8/deployment/#ingester)  
+Since version `2.4.0` this implementation is available in separate module `stracer-kafka`.
 
 ```scala
 trait ReportSpan[F[_]] {
@@ -64,7 +65,8 @@ trait ReportSpan[F[_]] {
 ```scala
 addSbtPlugin("com.evolution" % "sbt-artifactory-plugin" % "0.0.2")
 
-libraryDependencies += "com.evolutiongaming" %% "stracer"           % "2.0.4"
-libraryDependencies += "com.evolutiongaming" %% "stracer-play-json" % "2.0.4"
-libraryDependencies += "com.evolutiongaming" %% "stracer-circe"     % "2.0.4"
+libraryDependencies += "com.evolutiongaming" %% "stracer"           % "2.4.0"
+libraryDependencies += "com.evolutiongaming" %% "stracer-play-json" % "2.4.0"
+libraryDependencies += "com.evolutiongaming" %% "stracer-circe"     % "2.4.0"
+libraryDependencies += "com.evolutiongaming" %% "stracer-kafka"     % "2.4.0"
 ```
