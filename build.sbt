@@ -5,7 +5,8 @@ ThisBuild / versionScheme := Some("semver-spec")
 lazy val modules: List[ProjectReference] = List(
   `stracer`,
   `stracer-play-json`,
-  `stracer-circe`
+  `stracer-circe`,
+  `stracer-kafka`
 )
 
 lazy val root = project
@@ -19,7 +20,6 @@ lazy val `stracer` = project
   .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
-      skafka,
       zipkin,
       random,
       Scodec.core,
@@ -44,6 +44,11 @@ lazy val `stracer-circe` = project
   .settings(commonSettings)
   .settings(
     libraryDependencies ++= Circe.all ++ Seq(scalatest % Test))
+
+lazy val `stracer-kafka` = project
+  .dependsOn(`stracer`)
+  .settings(commonSettings)
+  .settings(libraryDependencies ++= Seq(skafka, scalatest % Test))
 
 val commonSettings = Seq(
   description := "Library for distributed tracing in Scala",
