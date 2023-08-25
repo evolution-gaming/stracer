@@ -7,7 +7,7 @@ object Dependencies {
   val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "3.5.0"
   val random        = "com.evolutiongaming" %% "random"       % "1.0.0"
   val configTools   = "com.evolutiongaming" %% "config-tools" % "1.0.4"
-  val skafka        = "com.evolutiongaming" %% "skafka"       % "16.0.0"
+  val skafka        = "com.evolutiongaming" %% "skafka"       % "16.0.3"
 
 
   object Cats {
