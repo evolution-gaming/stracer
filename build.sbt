@@ -13,6 +13,7 @@ lazy val root = project
   .in(file("."))
   .settings(name := "stracer")
   .settings(commonSettings)
+  .settings(alias)
   .settings(publish / skip := true)
   .aggregate(modules: _*)
 
@@ -53,13 +54,19 @@ lazy val `stracer-kafka` = project
 val commonSettings = Seq(
   description := "Library for distributed tracing in Scala",
   organization := "com.evolutiongaming",
-  homepage := Some(new URL("http://github.com/evolution-gaming/stracer")),
+  homepage := Some(url("https://github.com/evolution-gaming/stracer")),
   startYear := Some(2019),
   organizationName := "Evolution",
-  organizationHomepage := Some(url("http://evolution.com")),
+  organizationHomepage := Some(url("https://evolution.com")),
   scalaVersion := crossScalaVersions.value.head,
   crossScalaVersions := Seq("2.13.7", "2.12.15"),
   releaseCrossBuild := true,
   licenses := Seq(("MIT", url("https://opensource.org/licenses/MIT"))),
   publishTo := Some(Resolver.evolutionReleases),
   scalacOptsFailOnWarn := Some(false))
+
+val alias: Seq[sbt.Def.Setting[?]] =
+  //  addCommandAlias("check", "all versionPolicyCheck Compile/doc") ++
+  addCommandAlias("check", "show version") ++
+    addCommandAlias("build", "+all compile test")
+
