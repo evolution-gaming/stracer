@@ -7,7 +7,7 @@ object Dependencies {
   val `cats-helper` = "com.evolutiongaming" %% "cats-helper"  % "2.11.0"
   val random        = "com.evolutiongaming" %% "random"       % "0.1.1"
   val configTools   = "com.evolutiongaming" %% "config-tools" % "1.0.4"
-  val skafka        = "com.evolutiongaming" %% "skafka"       % "11.16.0"
+  val skafka        = "com.evolutiongaming" %% "skafka"       % "11.18.0"
 
   object Cats {
     private val version = "2.7.0"
@@ -25,14 +25,14 @@ object Dependencies {
   }
 
   object PlayJsonTools {
-    private val version = "0.11.0"
+    private val version = "1.1.1"
 
-    val tools   = "com.evolutiongaming" %% "play-json-tools"   % version
+    val tools   = "com.evolution" %% "play-json-tools"   % version
   }
 
   object Circe {
-    private val version       = "0.12.3"
-    private val versionExtras = "0.12.2"
+    private val version       = "0.14.9"
+    private val versionExtras = "0.14.1"
 
     val core             = "io.circe" %% "circe-core"           % version
     val generic          = "io.circe" %% "circe-generic"        % version

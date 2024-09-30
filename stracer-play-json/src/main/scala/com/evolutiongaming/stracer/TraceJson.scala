@@ -1,7 +1,7 @@
 package com.evolutiongaming.stracer
 
+import com.evolution.playjson.tools.PlayJsonHelper._
 import com.evolutiongaming.stracer.hex.{FromHex, ToHex}
-import com.evolutiongaming.playjsontools.PlayJsonHelper._
 import play.api.libs.json._
 
 object TraceJson {
@@ -34,7 +34,7 @@ object TraceJson {
 
     def jsResult: JsResult[A] = self match {
       case Right(a) => JsSuccess(a)
-      case Left(a)  => JsError(a)
+      case Left(a) => JsError(a)
     }
   }
 }
