@@ -26,7 +26,7 @@ object Dependencies {
   }
 
   object PlayJsonTools {
-    private val version = "1.1.1"
+    private val version = "1.2.3"
 
     val tools   = "com.evolution" %% "play-json-tools"   % version
   }
