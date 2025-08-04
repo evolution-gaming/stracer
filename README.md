@@ -1,7 +1,7 @@
 # STracer
 [![Build Status](https://github.com/evolution-gaming/stracer/workflows/CI/badge.svg)](https://github.com/evolution-gaming/stracer/actions?query=workflow:CI+branch:master)
 [![Coverage Status](https://coveralls.io/repos/github/evolution-gaming/stracer/badge.svg?branch=master)](https://coveralls.io/github/evolution-gaming/stracer?branch=master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4b3e6d6ca1224b1bb7004b18760f7fa8)](https://www.codacy.com/app/evolution-gaming/stracer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=evolution-gaming/stracer&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/02ff04792f8745e89ba4a5fe34794a77)](https://app.codacy.com/gh/evolution-gaming/stracer/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Version](https://img.shields.io/badge/version-click-blue)](https://evolution.jfrog.io/artifactory/api/search/latestVersion?g=com.evolutiongaming&a=stracer_2.13&repos=public)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellowgreen.svg)](https://opensource.org/licenses/MIT)
 
