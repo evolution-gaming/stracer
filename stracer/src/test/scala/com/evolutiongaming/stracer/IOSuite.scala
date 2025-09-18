@@ -1,6 +1,7 @@
 package com.evolutiongaming.stracer
 
 import cats.effect.IO
+import cats.effect.unsafe.IORuntime
 import org.scalatest.Succeeded
 
 import scala.concurrent.Future
@@ -9,7 +10,7 @@ import scala.concurrent.duration._
 object IOSuite {
   val Timeout: FiniteDuration = 5.seconds
 
-  implicit val runtime = cats.effect.unsafe.IORuntime.global
+  implicit val runtime: IORuntime = cats.effect.unsafe.IORuntime.global
 
   def runIO[A](io: IO[A], timeout: FiniteDuration = Timeout): Future[Succeeded.type] =
     io.timeout(timeout).as(Succeeded).unsafeToFuture()

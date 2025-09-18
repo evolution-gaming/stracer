@@ -38,7 +38,7 @@ object ReportSpanRecord {
       producerConfig <- config.getOpt[Config]("kafka.producer").map(ProducerConfig(_))
     } yield {
       val topic = config.getOpt[String]("topic") getOrElse "jaeger"
-      implicit val toBytes = ToBytesOf(SpanBytesEncoder.THRIFT)
+      implicit val toBytes: ToBytes[F, Nel[SpanRecord]] = ToBytesOf(SpanBytesEncoder.THRIFT)
       of[F](topic, producerConfig, enabled, producerOf)
     }
 
