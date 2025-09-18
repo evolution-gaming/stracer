@@ -1,6 +1,7 @@
-import Dependencies._
+import Dependencies.*
 
 ThisBuild / versionScheme := Some("semver-spec")
+ThisBuild / versionPolicyIntention := Compatibility.BinaryCompatible
 
 lazy val modules: List[ProjectReference] = List(
   `stracer`,
@@ -15,7 +16,7 @@ lazy val root = project
   .settings(commonSettings)
   .settings(alias)
   .settings(publish / skip := true)
-  .aggregate(modules: _*)
+  .aggregate(modules *)
 
 lazy val `stracer` = project
   .settings(commonSettings)
@@ -23,14 +24,24 @@ lazy val `stracer` = project
     libraryDependencies ++= Seq(
       zipkin,
       random,
-      Scodec.core,
       Scodec.bits,
       `cats-helper`,
       Cats.core,
       CatsEffect.effect,
       configTools,
-      Pureconfig.pureconfig,
       scalatest % Test,
+    ),
+    libraryDependencies ++= crossSettings(
+      scalaVersion = scalaVersion.value,
+      if2 = Seq(
+        Pureconfig.Scala2.pureconfig,
+        Scodec.Scala2.core,
+      ),
+      if3 = Seq(
+        Pureconfig.Scala3.core,
+        Pureconfig.Scala3.generic,
+        Scodec.Scala3.core,
+      ),
     ),
   )
 
@@ -64,15 +75,45 @@ val commonSettings = Seq(
   organizationName := "Evolution",
   organizationHomepage := Some(url("https://evolution.com")),
   scalaVersion := crossScalaVersions.value.head,
-  crossScalaVersions := Seq("2.13.15", "2.12.20"),
-  releaseCrossBuild := true,
+  crossScalaVersions := Seq("2.13.16", "3.3.6"),
+  scalacOptions ++= Seq(
+    "-release:17",
+    "-deprecation",
+  ),
+  scalacOptions ++= crossSettings(
+    scalaVersion = scalaVersion.value,
+    if2 = Seq(
+      "-Xsource:3",
+    ),
+    // Good compiler options for Scala 2.13 are coming from com.evolution:sbt-scalac-opts-plugin:0.0.9,
+    // but its support for Scala 3 is limited, especially what concerns linting options.
+    //
+    // If Scala 3 is made the primary target, good linting scalac options for it should be added first.
+    if3 = Seq(
+      "-Ykind-projector:underscores",
+
+      // disable new brace-less syntax:
+      // https://alexn.org/blog/2022/10/24/scala-3-optional-braces/
+      "-no-indent",
+
+      // improve error messages:
+      "-explain",
+      "-explain-types",
+    ),
+  ),
   licenses := Seq(("MIT", url("https://opensource.org/licenses/MIT"))),
   publishTo := Some(Resolver.evolutionReleases),
   scalacOptsFailOnWarn := Some(false),
 )
 
 val alias: Seq[sbt.Def.Setting[?]] =
-  //  addCommandAlias("check", "all versionPolicyCheck Compile/doc") ++
-  addCommandAlias("check", "all Compile/doc scalafmtCheckAll scalafmtSbtCheck") ++
+  addCommandAlias("check", "all versionPolicyCheck Compile/doc scalafmtCheckAll scalafmtSbtCheck") ++
     addCommandAlias("build", "+all compile test") ++
     addCommandAlias("fmt", "+all scalafmtAll scalafmtSbt")
+
+def crossSettings[T](scalaVersion: String, if3: T, if2: T): T = {
+  scalaVersion match {
+    case version if version.startsWith("3") => if3
+    case _ => if2
+  }
+}

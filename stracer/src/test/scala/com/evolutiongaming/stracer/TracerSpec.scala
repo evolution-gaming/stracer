@@ -16,8 +16,8 @@ class TracerSpec extends AsyncFunSuite with Matchers {
     random <- ThreadLocalRandom.of[IO]
   } yield {
 
-    implicit val random1 = random
-    implicit val traceGen = TraceGen[IO]()
+    implicit val random1: Random[IO] = random
+    implicit val traceGen: TraceGen[IO] = TraceGen[IO]()
 
     test("return random traces") {
       randomTraces[IO].run()
@@ -54,9 +54,9 @@ class TracerSpec extends AsyncFunSuite with Matchers {
     val tracer = Tracer(RuntimeConf(probability = Probability.always).pure[F])
     for {
       trace1 <- tracer.trace()
-      _ = trace1 shouldBe a[Some[_]]
+      _ = trace1 shouldBe a[Some[Trace]]
       trace2 <- tracer.trace()
-      _ = trace2 shouldBe a[Some[_]]
+      _ = trace2 shouldBe a[Some[Trace]]
     } yield {
       for {
         trace1 <- trace1
@@ -77,9 +77,9 @@ class TracerSpec extends AsyncFunSuite with Matchers {
       child1 <- tracer.childOf(trace1)
       child2 <- tracer.childOf(trace1)
       child3 <- disabledTracer.childOf(trace1)
-      _ = trace1 shouldBe a[Some[_]]
-      _ = child1 shouldBe a[Some[_]]
-      _ = child1 shouldBe a[Some[_]]
+      _ = trace1 shouldBe a[Some[Trace]]
+      _ = child1 shouldBe a[Some[Trace]]
+      _ = child1 shouldBe a[Some[Trace]]
       _ = child3 shouldBe None
     } yield {
       for {

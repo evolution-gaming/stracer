@@ -3,8 +3,9 @@ package com.evolutiongaming.stracer
 import cats.data.{NonEmptyList => Nel}
 import cats.effect.Sync
 import com.evolutiongaming.skafka.{ToBytes, Topic}
-import com.evolutiongaming.stracer.compat.CollectionConverters._
 import zipkin2.codec.SpanBytesEncoder
+
+import scala.jdk.CollectionConverters.*
 
 object ToBytesOf {
 
