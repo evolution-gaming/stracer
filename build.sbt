@@ -6,7 +6,7 @@ lazy val modules: List[ProjectReference] = List(
   `stracer`,
   `stracer-play-json`,
   `stracer-circe`,
-  `stracer-kafka`
+  `stracer-kafka`,
 )
 
 lazy val root = project
@@ -30,7 +30,9 @@ lazy val `stracer` = project
       CatsEffect.effect,
       configTools,
       Pureconfig.pureconfig,
-      scalatest % Test))
+      scalatest % Test,
+    ),
+  )
 
 lazy val `stracer-play-json` = project
   .dependsOn(`stracer`)
@@ -38,13 +40,16 @@ lazy val `stracer-play-json` = project
   .settings(
     libraryDependencies ++= Seq(
       PlayJsonTools.tools,
-      scalatest % Test))
+      scalatest % Test,
+    ),
+  )
 
 lazy val `stracer-circe` = project
   .dependsOn(`stracer`)
   .settings(commonSettings)
   .settings(
-    libraryDependencies ++= Circe.all ++ Seq(scalatest % Test))
+    libraryDependencies ++= Circe.all ++ Seq(scalatest % Test),
+  )
 
 lazy val `stracer-kafka` = project
   .dependsOn(`stracer`)
@@ -63,11 +68,11 @@ val commonSettings = Seq(
   releaseCrossBuild := true,
   licenses := Seq(("MIT", url("https://opensource.org/licenses/MIT"))),
   publishTo := Some(Resolver.evolutionReleases),
-  scalacOptsFailOnWarn := Some(false))
+  scalacOptsFailOnWarn := Some(false),
+)
 
 val alias: Seq[sbt.Def.Setting[?]] =
   //  addCommandAlias("check", "all versionPolicyCheck Compile/doc") ++
   addCommandAlias("check", "all Compile/doc scalafmtCheckAll scalafmtSbtCheck") ++
     addCommandAlias("build", "+all compile test") ++
     addCommandAlias("fmt", "+all scalafmtAll scalafmtSbt")
-

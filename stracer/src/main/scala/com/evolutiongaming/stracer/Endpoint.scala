@@ -5,7 +5,7 @@ import zipkin2.{Endpoint => EndpointJ}
 final case class Endpoint(
   serviceName: Option[String] = None,
   ip: Option[String] = None,
-  port: Option[Int] = None
+  port: Option[Int] = None,
 )
 
 object Endpoint {

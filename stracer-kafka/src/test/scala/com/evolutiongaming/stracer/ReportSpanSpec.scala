@@ -1,12 +1,12 @@
 package com.evolutiongaming.stracer
 
 import cats.syntax.all._
-import java.time.Instant
 import com.evolutiongaming.stracer.implicits._
-
-import scala.concurrent.duration._
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
+
+import java.time.Instant
+import scala.concurrent.duration._
 
 class ReportSpanSpec extends AnyFunSuite with Matchers {
 
@@ -39,7 +39,7 @@ class ReportSpanSpec extends AnyFunSuite with Matchers {
       "name",
       timestamp,
       duration = duration.some,
-      tags = ("name2" -> "value") & ("name3" -> "value3")
+      tags = ("name2" -> "value") & ("name3" -> "value3"),
     )
 
     val reportSpan = ReportSpan[StateT](localEndpoint, tags, reportSpanRecord, Kind.producer)
@@ -58,7 +58,7 @@ class ReportSpanSpec extends AnyFunSuite with Matchers {
       annotations = List.empty,
       tags = Map(("name1", "value1"), ("name2", "value"), ("name3", "value3")),
       debug = None,
-      shared = None
+      shared = None,
     )
     state shouldEqual State(List(record))
   }

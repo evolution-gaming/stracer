@@ -19,7 +19,11 @@ object TraceJson {
 
   implicit val TraceFormat: OFormat[Trace] = Json.format[Trace]
 
-  private def formatOf[A](implicit toHex: ToHex[A], fromHex: FromHex[A]): Format[A] = new Format[A] {
+  private def formatOf[A](
+    implicit
+    toHex: ToHex[A],
+    fromHex: FromHex[A],
+  ): Format[A] = new Format[A] {
 
     def writes(x: A): JsValue = JsString(toHex(x))
 

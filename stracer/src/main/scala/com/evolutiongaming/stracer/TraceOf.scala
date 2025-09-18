@@ -8,7 +8,10 @@ trait TraceOf[-A] {
 
 object TraceOf {
 
-  def apply[A](implicit F: TraceOf[A]): TraceOf[A] = F
+  def apply[A](
+    implicit
+    F: TraceOf[A],
+  ): TraceOf[A] = F
 
   def const[A](trace: Option[Trace]): TraceOf[A] = {
     class Const
@@ -23,7 +26,10 @@ object TraceOf {
 
   object implicits {
     implicit class IdOpsTraceOf[A](val self: A) extends AnyVal {
-      def trace(implicit traceOf: TraceOf[A]): Option[Trace] = traceOf(self)
+      def trace(
+        implicit
+        traceOf: TraceOf[A],
+      ): Option[Trace] = traceOf(self)
     }
   }
 }

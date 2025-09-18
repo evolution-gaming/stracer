@@ -3,8 +3,8 @@ package com.evolutiongaming.stracer
 import cats.effect.IO
 import org.scalatest.Succeeded
 
-import scala.concurrent.duration._
 import scala.concurrent.Future
+import scala.concurrent.duration._
 
 object IOSuite {
   val Timeout: FiniteDuration = 5.seconds

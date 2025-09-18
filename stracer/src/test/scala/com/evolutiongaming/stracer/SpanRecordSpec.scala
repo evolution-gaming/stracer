@@ -1,13 +1,13 @@
 package com.evolutiongaming.stracer
 
 import cats.syntax.all._
-import java.time.Instant
 import com.evolutiongaming.stracer.TracingHelper._
-import zipkin2.{Endpoint => EndpointJ, Span => SpanJ}
-
-import scala.concurrent.duration._
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
+import zipkin2.{Endpoint => EndpointJ, Span => SpanJ}
+
+import java.time.Instant
+import scala.concurrent.duration._
 
 class SpanRecordSpec extends AnyFunSuite with Matchers {
 
@@ -30,23 +30,23 @@ class SpanRecordSpec extends AnyFunSuite with Matchers {
       localEndpoint = Endpoint(
         serviceName = "local".some,
         ip = "0.0.0.0".some,
-        port = 0.some
+        port = 0.some,
       ).some,
       remoteEndpoint = Endpoint(
         serviceName = "remote".some,
         ip = "1.1.1.1".some,
-        port = 1.some
+        port = 1.some,
       ).some,
       annotations = List(
         Annotation("1", timestamp),
-        Annotation("2", timestamp)
+        Annotation("2", timestamp),
       ),
       tags = Map(
         ("key-1", "val-1"),
-        ("key-2", "val-2")
+        ("key-2", "val-2"),
       ),
       debug = true.some,
-      shared = false.some
+      shared = false.some,
     )
 
     val expected = SpanJ
@@ -64,7 +64,7 @@ class SpanRecordSpec extends AnyFunSuite with Matchers {
           .serviceName("local")
           .ip("0.0.0.0")
           .port(0)
-          .build()
+          .build(),
       )
       .remoteEndpoint(
         EndpointJ
@@ -72,7 +72,7 @@ class SpanRecordSpec extends AnyFunSuite with Matchers {
           .serviceName("remote")
           .ip("1.1.1.1")
           .port(1)
-          .build()
+          .build(),
       )
       .addAnnotation(timestamp.micros, "1")
       .addAnnotation(timestamp.micros, "2")

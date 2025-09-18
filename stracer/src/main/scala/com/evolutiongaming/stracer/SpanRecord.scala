@@ -1,10 +1,9 @@
 package com.evolutiongaming.stracer
 
-import java.time.Instant
 import com.evolutiongaming.stracer.TracingHelper._
-
 import zipkin2.{Span => SpanJ}
 
+import java.time.Instant
 import scala.concurrent.duration.FiniteDuration
 
 final case class SpanRecord(
@@ -20,7 +19,7 @@ final case class SpanRecord(
   annotations: List[Annotation] = List.empty,
   tags: Map[String, String] = Map.empty,
   debug: Option[Boolean] = None,
-  shared: Option[Boolean] = None
+  shared: Option[Boolean] = None,
 )
 
 object SpanRecord {

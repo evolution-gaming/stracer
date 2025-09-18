@@ -15,7 +15,10 @@ object ToHex {
     def apply(a: Hex) = a
   }
 
-  def apply[A](implicit F: ToHex[A]): ToHex[A] = F
+  def apply[A](
+    implicit
+    F: ToHex[A],
+  ): ToHex[A] = F
 
   def fromEncoder[A](encoder: Encoder[A]): ToHex[A] = new ToHex[A] {
 

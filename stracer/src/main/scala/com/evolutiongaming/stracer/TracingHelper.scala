@@ -9,7 +9,7 @@ object TracingHelper {
 
     def micros: Long = {
       val seconds = TimeUnit.SECONDS.toMicros(self.getEpochSecond)
-      val nanos   = TimeUnit.NANOSECONDS.toMicros(self.getNano.toLong)
+      val nanos = TimeUnit.NANOSECONDS.toMicros(self.getNano.toLong)
       seconds + nanos
     }
   }
@@ -18,7 +18,7 @@ object TracingHelper {
 
     def unsafe: A = self match {
       case Right(a) => a
-      case Left(a)  => throw new IllegalArgumentException(a)
+      case Left(a) => throw new IllegalArgumentException(a)
     }
   }
 }

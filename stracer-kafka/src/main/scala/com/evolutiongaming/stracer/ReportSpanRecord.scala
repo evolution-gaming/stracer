@@ -30,14 +30,14 @@ object ReportSpanRecord {
   def of[F[_]: Async: LogOf: FromTry](
     config: Config,
     enabled: F[Boolean],
-    producerOf: ProducerOf[F]
+    producerOf: ProducerOf[F],
   ): Resource[F, ReportSpanRecord[F]] = {
 
     val reportSpan = for {
-      _              <- config.getOpt[Boolean]("enabled").filter(identity)
+      _ <- config.getOpt[Boolean]("enabled").filter(identity)
       producerConfig <- config.getOpt[Config]("kafka.producer").map(ProducerConfig(_))
     } yield {
-      val topic            = config.getOpt[String]("topic") getOrElse "jaeger"
+      val topic = config.getOpt[String]("topic") getOrElse "jaeger"
       implicit val toBytes = ToBytesOf(SpanBytesEncoder.THRIFT)
       of[F](topic, producerConfig, enabled, producerOf)
     }
@@ -49,10 +49,9 @@ object ReportSpanRecord {
     topic: Topic,
     producerConfig: ProducerConfig,
     enabled: F[Boolean],
-    producerOf: ProducerOf[F]
-  )(
-    implicit
-    toBytes: ToBytes[F, Nel[SpanRecord]]
+    producerOf: ProducerOf[F],
+  )(implicit
+    toBytes: ToBytes[F, Nel[SpanRecord]],
   ): Resource[F, ReportSpanRecord[F]] = {
 
     sealed trait State
@@ -94,7 +93,7 @@ object ReportSpanRecord {
 
             case None if enabled =>
               val state = for {
-                _        <- log.info("enable")
+                _ <- log.info("enable")
                 producer <- producer(log)
               } yield {
                 State.running(producer.some)
@@ -120,8 +119,8 @@ object ReportSpanRecord {
             case _: State.Running =>
               for {
                 enabled <- enabled
-                _       <- Sync[F].uncancelable { _ => update(stateRef, enabled, log) }
-                _       <- Temporal[F].sleep(10.seconds)
+                _ <- Sync[F].uncancelable { _ => update(stateRef, enabled, log) }
+                _ <- Temporal[F].sleep(10.seconds)
               } yield {
                 ().asLeft[Unit]
               }
@@ -130,12 +129,12 @@ object ReportSpanRecord {
       }
 
     val resource = for {
-      log      <- LogOf[F].apply(getClass)
+      log <- LogOf[F].apply(getClass)
       stateRef <- SerialRef[F].of(State.running(none))
       release = stateRef.update {
         case State.Running(Some((_, release))) => release.as(State.stopped)
-        case State.Running(None)               => State.stopped.pure[F]
-        case State.Stopped                     => State.stopped.pure[F]
+        case State.Running(None) => State.stopped.pure[F]
+        case State.Stopped => State.stopped.pure[F]
       }
       fiber <- background(stateRef, log)
         .guarantee(release)
@@ -155,7 +154,7 @@ object ReportSpanRecord {
       } yield {
         state match {
           case State.Running(producer) => producer.map { case (producer, _) => producer }
-          case State.Stopped           => none[Producer[F]]
+          case State.Stopped => none[Producer[F]]
         }
       }
 
@@ -166,15 +165,19 @@ object ReportSpanRecord {
     Resource(resource)
   }
 
-  def apply[F[_]: Concurrent: FromTry](topic: Topic, producer: F[Option[Producer[F]]], log: Log[F])(
-    implicit
-    toBytes: ToBytes[F, Nel[SpanRecord]]
+  def apply[F[_]: Concurrent: FromTry](
+    topic: Topic,
+    producer: F[Option[Producer[F]]],
+    log: Log[F],
+  )(implicit
+    toBytes: ToBytes[F, Nel[SpanRecord]],
   ): ReportSpanRecord[F] = new ReportSpanRecord[F] {
 
     def apply(span: SpanRecord): F[Unit] = {
 
       def send(producer: Producer[F]) = {
-        val record = ProducerRecord[String, Nel[SpanRecord]](topic = topic, key = span.traceId.hex, value = Nel.of(span))
+        val record =
+          ProducerRecord[String, Nel[SpanRecord]](topic = topic, key = span.traceId.hex, value = Nel.of(span))
         producer
           .send(record)
           .void
@@ -187,7 +190,7 @@ object ReportSpanRecord {
 
       for {
         producer <- producer
-        result   <- producer.foldMapM(send)
+        result <- producer.foldMapM(send)
       } yield result
     }
   }

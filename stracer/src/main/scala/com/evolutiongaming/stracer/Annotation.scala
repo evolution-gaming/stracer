@@ -4,5 +4,5 @@ import java.time.Instant
 
 final case class Annotation(
   value: String,
-  timestamp: Instant
+  timestamp: Instant,
 )

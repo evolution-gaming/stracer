@@ -14,8 +14,8 @@ class ThreadLocalRandomSpec extends AsyncFunSuite with Matchers {
   private def randomTraces: IO[Unit] =
     for {
       random <- ThreadLocalRandom.of[IO]
-      n1     <- random.int
-      n2     <- random.int
+      n1 <- random.int
+      n2 <- random.int
     } yield {
       n1 should not equal n2
       ()

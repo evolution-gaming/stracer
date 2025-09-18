@@ -1,9 +1,9 @@
 package com.evolutiongaming.stracer
 
-import java.time.Instant
-
 import com.evolutiongaming.stracer.hex.implicits._
 import com.evolutiongaming.stracer.hex.{FromHex, Hex, ToHex}
+
+import java.time.Instant
 
 sealed abstract case class TraceId(hex: Hex)
 
@@ -15,7 +15,7 @@ object TraceId {
 
   def apply(timestamp: Instant, randomInt: Int, randomLong: Long): TraceId = {
     val epochSeconds = timestamp.toEpochMilli / 1000
-    val high         = (epochSeconds & 0xFFFFFFFFL) << 32 | (randomInt & 0xFFFFFFFFL)
+    val high = (epochSeconds & 0xffffffffL) << 32 | (randomInt & 0xffffffffL)
     apply(HighLow(high = high, low = randomLong))
   }
 

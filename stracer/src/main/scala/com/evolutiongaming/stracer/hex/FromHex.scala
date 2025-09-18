@@ -15,7 +15,10 @@ object FromHex {
 
   implicit val HexToHex: FromHex[Hex] = _.asRight
 
-  def apply[A](implicit F: FromHex[A]): FromHex[A] = F
+  def apply[A](
+    implicit
+    F: FromHex[A],
+  ): FromHex[A] = F
 
   def fromDecoder[A](decoder: Decoder[A]): FromHex[A] = {
 
@@ -25,8 +28,8 @@ object FromHex {
 
       def apply(hex: Hex) =
         for {
-          bytes  <- ByteVector.fromHexDescriptive(hex)
-          bits   = bytes.bits
+          bytes <- ByteVector.fromHexDescriptive(hex)
+          bits = bytes.bits
           result <- decoder.decode(bits).fold(errToString, _.asRight)
         } yield {
           result.value

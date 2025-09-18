@@ -1,7 +1,6 @@
 package com.evolutiongaming.stracer
 
 import java.time.Instant
-
 import scala.concurrent.duration.FiniteDuration
 
 final case class Span(
@@ -14,5 +13,5 @@ final case class Span(
   remoteEndpoint: Option[Endpoint] = None,
   tags: Tags = List.empty,
   shared: Option[Boolean] = None,
-  parentId: Option[SpanId] = None
+  parentId: Option[SpanId] = None,
 )

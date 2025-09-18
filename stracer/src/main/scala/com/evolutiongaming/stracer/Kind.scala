@@ -25,8 +25,8 @@ object Kind {
   implicit class KindOps(val self: Kind) extends AnyVal {
 
     def toJava: SpanJ.Kind = self match {
-      case Client   => SpanJ.Kind.CLIENT
-      case Server   => SpanJ.Kind.SERVER
+      case Client => SpanJ.Kind.CLIENT
+      case Server => SpanJ.Kind.SERVER
       case Producer => SpanJ.Kind.PRODUCER
       case Consumer => SpanJ.Kind.CONSUMER
     }

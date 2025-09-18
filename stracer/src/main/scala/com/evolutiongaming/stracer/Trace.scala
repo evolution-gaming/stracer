@@ -7,13 +7,16 @@ final case class Trace(
   spanId: SpanId,
   parentId: Option[SpanId],
   timestamp: Option[Instant],
-  sampling: Option[Sampling] = None
+  sampling: Option[Sampling] = None,
 )
 
 object Trace {
 
   implicit class TraceOps(val self: Trace) extends AnyVal {
 
-    def child[F[_]](implicit traceGen: TraceGen[F]): F[Trace] = traceGen.childOf(self)
+    def child[F[_]](
+      implicit
+      traceGen: TraceGen[F],
+    ): F[Trace] = traceGen.childOf(self)
   }
 }

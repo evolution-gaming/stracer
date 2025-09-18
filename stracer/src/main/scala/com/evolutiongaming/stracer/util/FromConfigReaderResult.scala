@@ -12,10 +12,12 @@ trait FromConfigReaderResult[F[_]] {
 
 object FromConfigReaderResult {
 
-  def apply[F[_]](implicit F: FromConfigReaderResult[F]): FromConfigReaderResult[F] = F
+  def apply[F[_]](
+    implicit
+    F: FromConfigReaderResult[F],
+  ): FromConfigReaderResult[F] = F
 
-
-  implicit def lift[F[_] : ApplicativeThrowable]: FromConfigReaderResult[F] = {
+  implicit def lift[F[_]: ApplicativeThrowable]: FromConfigReaderResult[F] = {
     new FromConfigReaderResult[F] {
       def apply[A](a: ConfigReader.Result[A]) = {
         a.fold(a => ConfigReaderException(a).raiseError[F, A], _.pure[F])

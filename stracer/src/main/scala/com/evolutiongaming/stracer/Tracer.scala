@@ -18,12 +18,15 @@ trait Tracer[F[_]] {
 
 object Tracer {
 
-  def apply[F[_]](implicit F: Tracer[F]): Tracer[F] = F
+  def apply[F[_]](
+    implicit
+    F: Tracer[F],
+  ): Tracer[F] = F
 
   def empty[F[_]: Applicative]: Tracer[F] = const(none[Trace].pure[F])
 
   def const[F[_]](trace: F[Option[Trace]]): Tracer[F] = {
-    val trace1  = trace
+    val trace1 = trace
     new Tracer[F] {
 
       def trace(sampling: Option[Sampling]): F[Option[Trace]] = trace1
@@ -32,30 +35,27 @@ object Tracer {
     }
   }
 
-
   def of[F[_]: Monad: FromConfigReaderResult: TraceGen: Random](
     runtimeConf: F[RuntimeConf],
-    config: Config
+    config: Config,
   ): F[Tracer[F]] = {
     def startupConf = ConfigSource
       .fromConfig(config)
       .load[StartupConf]
     for {
       tracerConfig <- startupConf.liftTo[F]
-      tracer       <- of(tracerConfig, runtimeConf)
+      tracer <- of(tracerConfig, runtimeConf)
     } yield tracer
   }
 
-
   def of[F[_]: Monad: TraceGen: Random](
     startupConf: StartupConf,
-    runtimeConf: F[RuntimeConf]
+    runtimeConf: F[RuntimeConf],
   ): F[Tracer[F]] = {
 
     val tracer = if (startupConf.enabled) apply[F](runtimeConf) else empty[F]
     tracer.pure[F]
   }
-
 
   def apply[F[_]: Monad: TraceGen: Random](conf: F[RuntimeConf]): Tracer[F] = {
     new Tracer[F] {
@@ -72,9 +72,9 @@ object Tracer {
 
       private def whenEnabled(ctx: => F[Option[Trace]]): F[Option[Trace]] =
         for {
-          conf    <- conf
-          enabled  = conf.enabled
-          ctx     <- if (enabled) ctx else none[Trace].pure[F]
+          conf <- conf
+          enabled = conf.enabled
+          ctx <- if (enabled) ctx else none[Trace].pure[F]
         } yield ctx
 
       private def shouldTrace(sampling: Option[Sampling]): F[Boolean] = for {
@@ -84,7 +84,6 @@ object Tracer {
       } yield probability > randomValue
     }
   }
-
 
   final case class StartupConf(enabled: Boolean = false)
 

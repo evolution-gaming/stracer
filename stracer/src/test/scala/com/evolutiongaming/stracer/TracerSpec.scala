@@ -5,10 +5,10 @@ import cats.effect._
 import cats.syntax.all._
 import com.evolutiongaming.random.{Random, ThreadLocalRandom}
 import com.evolutiongaming.stracer.IOSuite._
-import org.scalatest.funsuite.AsyncFunSuite
-import org.scalatest.matchers.should.Matchers
 import com.evolutiongaming.stracer.Tracer.RuntimeConf
 import com.evolutiongaming.stracer.util.Probability
+import org.scalatest.funsuite.AsyncFunSuite
+import org.scalatest.matchers.should.Matchers
 
 class TracerSpec extends AsyncFunSuite with Matchers {
 
@@ -54,9 +54,9 @@ class TracerSpec extends AsyncFunSuite with Matchers {
     val tracer = Tracer(RuntimeConf(probability = Probability.always).pure[F])
     for {
       trace1 <- tracer.trace()
-      _      =  trace1 shouldBe a[Some[_]]
+      _ = trace1 shouldBe a[Some[_]]
       trace2 <- tracer.trace()
-      _      =  trace2 shouldBe a[Some[_]]
+      _ = trace2 shouldBe a[Some[_]]
     } yield {
       for {
         trace1 <- trace1
@@ -70,17 +70,17 @@ class TracerSpec extends AsyncFunSuite with Matchers {
   }
 
   private def childTraces[F[_]: Monad: TraceGen: Random] = {
-    val tracer         = Tracer(RuntimeConf(probability = Probability.always).pure[F])
+    val tracer = Tracer(RuntimeConf(probability = Probability.always).pure[F])
     val disabledTracer = Tracer(RuntimeConf(enabled = false).pure[F])
     for {
       trace1 <- tracer.trace()
       child1 <- tracer.childOf(trace1)
       child2 <- tracer.childOf(trace1)
       child3 <- disabledTracer.childOf(trace1)
-      _      =  trace1 shouldBe a[Some[_]]
-      _      =  child1 shouldBe a[Some[_]]
-      _      =  child1 shouldBe a[Some[_]]
-      _      =  child3 shouldBe None
+      _ = trace1 shouldBe a[Some[_]]
+      _ = child1 shouldBe a[Some[_]]
+      _ = child1 shouldBe a[Some[_]]
+      _ = child3 shouldBe None
     } yield {
       for {
         trace1 <- trace1
@@ -103,7 +103,7 @@ class TracerSpec extends AsyncFunSuite with Matchers {
   private def returnNone[F[_]: Monad: TraceGen: Random] = {
     val tracer = Tracer(RuntimeConf(enabled = false).pure[F])
     for {
-      trace  <- tracer.trace()
+      trace <- tracer.trace()
     } yield {
       trace shouldEqual none
     }

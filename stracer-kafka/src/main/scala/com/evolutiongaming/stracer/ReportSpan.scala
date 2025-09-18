@@ -21,7 +21,7 @@ object ReportSpan {
     localEndpoint: Endpoint,
     tags: Tags,
     reportSpan: ReportSpanRecord[F],
-    kind: Kind
+    kind: Kind,
   ): ReportSpan[F] = new ReportSpan[F] {
 
     def apply(span: Span) = {
@@ -43,7 +43,7 @@ object ReportSpan {
         annotations = List.empty,
         tags = tags1,
         debug = None,
-        shared = span.shared
+        shared = span.shared,
       )
 
       reportSpan(record)
