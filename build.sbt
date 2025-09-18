@@ -67,6 +67,7 @@ val commonSettings = Seq(
 
 val alias: Seq[sbt.Def.Setting[?]] =
   //  addCommandAlias("check", "all versionPolicyCheck Compile/doc") ++
-  addCommandAlias("check", "show version") ++
-    addCommandAlias("build", "+all compile test")
+  addCommandAlias("check", "all Compile/doc scalafmtCheckAll scalafmtSbtCheck") ++
+    addCommandAlias("build", "+all compile test") ++
+    addCommandAlias("fmt", "+all scalafmtAll scalafmtSbt")
 
